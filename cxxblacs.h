@@ -41,9 +41,16 @@ extern "C" {
   void dgerv2d_(const int*, const int *, const int *, const double *,
     const int*, const int *, const int *);
 
+  void dgsum2d_(const int*, const char*, const char*, const int*, 
+    const int*, double*, const int*, const int*, const int*);
+
   // SCALAPACK
   int  numroc_(const int*,const int*,const int*,const int*,const int*);
 
+
+  // LAPACK
+  double ddot_(const int *, const double *, const int *, const double *,
+    const int*);
 };
 
 

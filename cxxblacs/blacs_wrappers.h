@@ -128,3 +128,12 @@ static inline void GERV2D(const int ICONTXT, const int M, const int N,
     dgerv2d_(&ICONTXT,&M,&N,A,&LDA,&RDest,&CDest);
 }
 
+
+template<typename Field>
+static inline void GSUM2D(const int ICONTXT, const char SCOPE[], 
+  const char TOP[], const int M, const int N, Field &A, const int LDA,
+  const int RDest, const int CDest) {
+  
+  if(typeid(Field).hash_code() == typeid(double).hash_code())
+    dgsum2d_(&ICONTXT,SCOPE,TOP,&M,&N,&A,&LDA,&RDest,&CDest);
+}
