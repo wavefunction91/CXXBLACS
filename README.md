@@ -6,6 +6,8 @@ basic additionial functionality if provided, such as gathering to and
 distributing from a root MPI process. For a full list of the current
 functionality, please look over the documentation (built via doxygen).
 
-**Contact the developers**: __
-  David Williams-Young __
+**Contact the developers**:
+
+  David Williams-Young
+
   dbwy@u.washington.edu
