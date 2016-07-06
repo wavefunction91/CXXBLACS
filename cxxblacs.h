@@ -16,6 +16,8 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+#ifndef __INCLUDED_CXXBLACS_H__
+#define __INCLUDED_CXXBLACS_H__
 #include <iostream>
 #include <vector>
 #include <string>
@@ -152,3 +154,4 @@ public:
   #include "cxxblacs/blacs_gather_distribute.h"
 
 };
+#endif
