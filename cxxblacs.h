@@ -144,11 +144,11 @@ public:
     this->nb_ = NB; this->mb_ = MB;
   }
 
-  #include "blacs_print.h"
-  #include "blacs_wrappers.h"
-  #include "mpi_exec.h"
-  #include "global_local_conv.h"
-  #include "blacsgrid_misc.h"
-  #include "blacs_gather_distribute.h"
+  #include "cxxblacs/blacs_print.h"
+  #include "cxxblacs/blacs_wrappers.h"
+  #include "cxxblacs/mpi_exec.h"
+  #include "cxxblacs/global_local_conv.h"
+  #include "cxxblacs/blacsgrid_misc.h"
+  #include "cxxblacs/blacs_gather_distribute.h"
 
 };
