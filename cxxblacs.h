@@ -160,16 +160,6 @@ public:
   #include "cxxblacs/blacsgrid_misc.h"
   #include "cxxblacs/blacs_gather_distribute.h"
 
-  template<typename Field>
-  inline void PDOT(const int N, const Field *ALoc, const int AStride,
-    const Field * BLoc, const int BStride, Field &LDDOT){
-
-    int NLocR,NLocC;
-    this->getLocalDims(N,N,NLocR,NLocC); 
-    int NLOC = NLocR*NLocC;
-    LDDOT = ddot_(&NLOC,ALoc,&AStride,BLoc,&BStride);
-    BlacsGrid::GSUM2D(this->IContxt_,"All","1-tree",1,1,LDDOT,1,0,0);
-  }
 
 };
 #endif
