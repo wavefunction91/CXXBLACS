@@ -27,22 +27,9 @@ int main() {
   // Distribute the matrix to ALoc
   Grid.distribute(N,A,ALoc);
 
-  // Compute local scalar product
-  int Stride = 1;
-  int NLOC = NLocR*NLocC;
-  double LDDOT = ddot_(&NLOC,ALoc.data(),&Stride,ALoc.data(),&Stride);
-
-  // Output local scalar products in a Ring
-  BlacsGrid::RingExecute([&] { 
-    std::cout << "Process " << Grid.iProc() << " has local scalar product "
-	     <<  "LDDOT = " << LDDOT << std::endl;
-  });
-
-  // Communicate and sum the local doc product and send to BLACS coordinate
-  // (0,0)
-  BlacsGrid::GSUM2D(Grid.iContxt(),"All","1-tree",1,1,LDDOT,1,0,0);
-
-  // Ouput final result on root process
+  // Compute dot product in parallel to verify
+  double LDDOT;
+  Grid.PDOT(N,ALoc.data(),1,ALoc.data(),1,LDDOT);
   BlacsGrid::RootExecute([&] { 
     std::cout << "Root Process has total DDOT = " << LDDOT << std::endl; 
   });

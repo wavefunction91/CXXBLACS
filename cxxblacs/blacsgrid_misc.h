@@ -54,6 +54,13 @@ static inline void GetLocalDims(const int N, const int M, const int MB,
 
 /**
  * \brief Wrapper for GESD2D that uses the current grid
+ *
+ * @param [in] N Number of columns of buffer 
+ * @param [in] M Number of rows of buffer
+ * @param [in] A Buffer to send
+ * @param [in] LDA Leading dimension of buffer
+ * @param [in] RDest Destination process row
+ * @param [in] CDest Destination process column
  */
 template<typename Field>
 inline void Send(const int M, const int N, Field *A, const int LDA,
@@ -70,4 +77,15 @@ inline void Recv(const int M, const int N, Field *A, const int LDA,
   const int RDest, const int CDest) {
 
   BlacsGrid::GERV2D(this->IContxt_,M,N,A,LDA,RDest,CDest);
+}
+
+template<typename Field>
+inline void PDOT(const int N, const Field *ALoc, const int AStride,
+  const Field * BLoc, const int BStride, Field &LDDOT){
+
+  int NLocR,NLocC;
+  this->getLocalDims(N,N,NLocR,NLocC); 
+  int NLOC = NLocR*NLocC;
+  LDDOT = ddot_(&NLOC,ALoc,&AStride,BLoc,&BStride);
+  BlacsGrid::GSUM2D(this->IContxt_,"All","1-tree",1,1,LDDOT,1,0,0);
 }
