@@ -3,6 +3,9 @@
 void LocalIdentity(const int N, double *A);
 
 int main() {
+
+  MPI_Init(NULL,NULL);
+
   // Initialize the BLACS Grid (NB = MB = 2)
   BlacsGrid Grid;
 
@@ -33,6 +36,8 @@ int main() {
   BlacsGrid::RootExecute([&] { 
     std::cout << "Root Process has total DDOT = " << LDDOT << std::endl; 
   });
+
+  MPI_Finalize();
 
 };
 
