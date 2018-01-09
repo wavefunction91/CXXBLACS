@@ -41,6 +41,29 @@ namespace CXXBLACS {
   LACOPY_IMPL(std::complex<double>,zlacpy_);
 
 
+
+
+  template <typename Field>
+  inline void GEMM(const char TRANSA, const char TRANSB, const CB_INT M,
+    const CB_INT N, const CB_INT K, const Field ALPHA, const Field *A,
+    const CB_INT LDA, const Field *B, const CB_INT LDB, const Field BETA,
+    Field *C, const CB_INT LDC);
+
+  #define GEMM_IMPL(F,FUNC)\
+  template <>\
+  inline void GEMM(const char TRANSA, const char TRANSB, const CB_INT M,\
+    const CB_INT N, const CB_INT K, const F ALPHA, const F *A,\
+    const CB_INT LDA, const F *B, const CB_INT LDB, const F BETA,\
+    F *C, const CB_INT LDC) {\
+    FUNC(&TRANSA,&TRANSB,&M,&N,&K,&ALPHA,A,&LDA,B,&LDB,&BETA,C,&LDC);\
+  };
+
+  GEMM_IMPL(float               ,sgemm_);
+  GEMM_IMPL(double              ,dgemm_);
+  GEMM_IMPL(std::complex<float> ,cgemm_);
+  GEMM_IMPL(std::complex<double>,zgemm_);
+
+
 };
 
 #endif
