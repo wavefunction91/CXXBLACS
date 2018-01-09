@@ -35,7 +35,12 @@
 #endif
 
 namespace CXXBLACS {
+
   typedef std::pair<CB_INT,CB_INT> INDX;
-}
+
+  static constexpr CB_INT DESCINIT_LEN_MAX = 9;
+  typedef std::array<CB_INT,DESCINIT_LEN_MAX> ScaLAPACK_Desc_t;
+
+};
 
 #endif

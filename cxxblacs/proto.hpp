@@ -70,7 +70,31 @@ extern "C" {
   gesum(std::complex<double>,zgsum2d_);
 
 
-  // LAPACK
+
+
+  // ScaLAPACK + PBLAS
+      
+  void descinit_(CB_INT*, const CB_INT*, const CB_INT*, const CB_INT*,
+    const CB_INT*, const CB_INT*, const CB_INT*, const CB_INT*, 
+    const CB_INT*, const CB_INT*);
+
+  #define pgemm(F,FUNC)\
+  void FUNC(const char*, const char*,\
+    const CB_INT*, const CB_INT*,const CB_INT*, const F*,\
+    const F*, const CB_INT*, const CB_INT*, const CB_INT*,\
+    const F*, const CB_INT*, const CB_INT*, const CB_INT*,\
+    const F*, F*, const CB_INT*, const CB_INT*, const CB_INT*);
+
+  pgemm(float               ,psgemm_);
+  pgemm(double              ,pdgemm_);
+  pgemm(std::complex<float> ,pcgemm_);
+  pgemm(std::complex<double>,pzgemm_);
+
+
+
+
+  // LAPACK + BLAS
+    
   #define lacpy(F,FUNC)\
   void FUNC(const char*, const CB_INT*, const CB_INT*, F *, const CB_INT *,\
     F *, const CB_INT*);
@@ -80,8 +104,16 @@ extern "C" {
   lacpy(std::complex<float> ,clacpy_);
   lacpy(std::complex<double>,zlacpy_);
 
-  double ddot_(const CB_INT *, const double *, const CB_INT *, const double *,
-    const CB_INT*);
+
+  #define gemm(F,FUNC)\
+  void FUNC(const char*, const char*, const CB_INT*, const CB_INT*,\
+    const CB_INT*, const F*, const F*, const CB_INT*, const F*,\
+    const CB_INT*,const F*, F*, const CB_INT*);
+
+  gemm(float               ,sgemm_);
+  gemm(double              ,dgemm_);
+  gemm(std::complex<float> ,cgemm_);
+  gemm(std::complex<double>,zgemm_);
 
 };
 

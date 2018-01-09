@@ -26,5 +26,6 @@
 #include <cxxblacs/mpi.hpp>
 
 #include <cxxblacs/blacsgrid.hpp>
+#include <cxxblacs/scalapack.hpp>
 
 #endif

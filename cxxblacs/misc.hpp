@@ -105,8 +105,9 @@ namespace CXXBLACS {
    * @param[in]  iY Local column coordinate
    */
   inline void GlobalFromLocal(const CB_INT ICONTXT, const CB_INT MB,
-    const CB_INT NB, const CB_INT NPROW, const CB_INT NPCOL, CB_INT &I, CB_INT &J,
-    const CB_INT Pr, const CB_INT Pc, const CB_INT iX, const CB_INT iY) {
+    const CB_INT NB, const CB_INT NPROW, const CB_INT NPCOL, CB_INT &I, 
+    CB_INT &J, const CB_INT Pr, const CB_INT Pc, const CB_INT iX, 
+    const CB_INT iY) {
   
     CB_INT L = iX / MB;
     CB_INT M = iY / NB;
@@ -115,6 +116,35 @@ namespace CXXBLACS {
     J = (M * (NPCOL - 1) + Pc) * NB + iY;
 
   }
+
+
+
+
+  inline ScaLAPACK_Desc_t DescInit(const CB_INT M,
+    const CB_INT N, const CB_INT MB, const CB_INT NB, const CB_INT ISRC,
+    const CB_INT JSRC, const CB_INT ICTXT, const CB_INT LDD) {
+
+
+    ScaLAPACK_Desc_t desc;
+
+    CB_INT INFO;
+    descinit_(&desc[0],&M,&N,&MB,&NB,&ISRC,&JSRC,&ICTXT,&LDD,&INFO);
+
+    // Note that this is not always fatal, and useful information can
+    // be obtained, such as smallest LDD
+    if( INFO != 0 ) {
+
+      std::stringstream ss;
+      ss << "DESCINIT RECIEVED ILLEGAL ARG(" << -INFO << ")";
+      std::runtime_error err(ss.str());
+
+      throw err;
+
+    };
+
+    return desc;
+
+  };
 
 
 

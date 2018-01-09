@@ -440,6 +440,16 @@ namespace CXXBLACS {
 
 
 
+
+    // ScaLAPACK Helper functions
+      
+    inline ScaLAPACK_Desc_t descInit(const CB_INT M, const CB_INT N,
+      const CB_INT ISRC, const CB_INT JSRC, const CB_INT LDD) {
+
+      return DescInit(M,N,mb_,nb_,ISRC,JSRC,IContxt_,LDD);
+
+    };
+
   };
 
 }; // CXXBLACS
