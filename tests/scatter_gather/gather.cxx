@@ -19,12 +19,12 @@
 
 #include "scatter_gather.hpp"
 
-BOOST_AUTO_TEST_SUITE(SCATTER)
+BOOST_AUTO_TEST_SUITE(GATHER)
 
 
 
 template <typename Field, size_t MB, size_t NB, size_t M, size_t N>
-void scatter_test() {
+void gather_test() {
 
   // Synchronize processes
   MPI_Barrier(MPI_COMM_WORLD);
@@ -33,22 +33,14 @@ void scatter_test() {
 
   std::vector<Field> A, ALoc;
 
-  // Form full matrix on root process
-  RootExecute(MPI_COMM_WORLD,[&]() {
-    A.resize(M*N);
-    for(auto k = 0ul; k < M*N; k++) A[k] = generate(Field(k));
-  });
-
   // Allocate Local Buffers
   CB_INT NLocR, NLocC;
   std::tie(NLocR, NLocC) = grid.getLocalDims(M,N);
 
   ALoc.resize(NLocR * NLocC);
 
-  // Scatter the matrix onto the process grid
-  grid.Scatter(M,N,A.data(),M,ALoc.data(),NLocR,0,0);
 
-  // Test the local buffers
+  // Form distributed blocks
   for(auto iLocR = 0; iLocR < NLocR; iLocR++)
   for(auto iLocC = 0; iLocC < NLocC; iLocC++) {
 
@@ -56,15 +48,37 @@ void scatter_test() {
     std::tie(I,J) = grid.globalFromLocal(iLocR,iLocC);
     CB_INT K = I + J*M;
 
-    BOOST_CHECK_MESSAGE(
-      (std::abs(ALoc[iLocR + iLocC*NLocR] -  generate(Field(K)))) < 1e-16, 
-      "Scattered Buffer Not Correct! " << 
-      "(" << iLocR << ", " << iLocC << ") -> " <<
-      "(" << I     << ", " << J     << "): " <<
-      ALoc[iLocR + iLocC*NLocR] << ", " << K 
-    );
+    ALoc[iLocR + iLocC*NLocR] = generate(Field(K));
 
   }
+
+  // Allocate total matrix on root process
+  RootExecute(MPI_COMM_WORLD,[&](){ A.resize(M*N); } );
+
+  // Gather distributed matrix to root process
+  grid.Gather(M,N,A.data(),M,ALoc.data(),NLocR,0,0);
+
+
+  // Test the root buffer
+  RootExecute(MPI_COMM_WORLD,[&]() {
+
+    for(auto K = 0; K < N*M; K++) {
+      auto I = K % M;
+      auto J = K / M;
+
+      BOOST_CHECK_MESSAGE(
+        (std::abs(A[K] -  generate(Field(K)))) < 1e-16, 
+        "Gathered Buffer Not Correct! " << 
+        "(" << I     << ", " << J     << "): " <<
+        A[K] << ", " << K 
+      );
+
+    }
+
+  });
+
+
+  NotRootExecute(MPI_COMM_WORLD,[&]() { BOOST_CHECK(true); } );
 
   // Synchronize processes
   MPI_Barrier(MPI_COMM_WORLD);
@@ -72,7 +86,7 @@ void scatter_test() {
 };
 
 #define TEST_IMPL_F(NAME,F,MB,NB,M,N)\
-  BOOST_AUTO_TEST_CASE(NAME) { scatter_test<F,MB,NB,M,N>(); };
+  BOOST_AUTO_TEST_CASE(NAME) { gather_test<F,MB,NB,M,N>(); };
 
 #define TEST_IMPL(NAME,MB,NB,M,N) \
   TEST_IMPL_F(NAME##_Float,        float,               MB,NB,M,N)\
@@ -81,17 +95,17 @@ void scatter_test() {
   TEST_IMPL_F(NAME##_ComplexDouble,std::complex<double>,MB,NB,M,N)
 
 
-TEST_IMPL(Scatter_2x2_SquareMatrix,2,2,CXXBLACS_N,CXXBLACS_N);
-TEST_IMPL(Scatter_1x2_SquareMatrix,1,2,CXXBLACS_N,CXXBLACS_N);
-TEST_IMPL(Scatter_2x1_SquareMatrix,2,1,CXXBLACS_N,CXXBLACS_N);
+TEST_IMPL(Gather_2x2_SquareMatrix,2,2,CXXBLACS_N,CXXBLACS_N);
+TEST_IMPL(Gather_1x2_SquareMatrix,1,2,CXXBLACS_N,CXXBLACS_N);
+TEST_IMPL(Gather_2x1_SquareMatrix,2,1,CXXBLACS_N,CXXBLACS_N);
 
-TEST_IMPL(Scatter_2x2_RectangularMatrix_BS,2,2,CXXBLACS_M,CXXBLACS_N);
-TEST_IMPL(Scatter_1x2_RectangularMatrix_BS,1,2,CXXBLACS_M,CXXBLACS_N);
-TEST_IMPL(Scatter_2x1_RectangularMatrix_BS,2,1,CXXBLACS_M,CXXBLACS_N);
+TEST_IMPL(Gather_2x2_RectangularMatrix_BS,2,2,CXXBLACS_M,CXXBLACS_N);
+TEST_IMPL(Gather_1x2_RectangularMatrix_BS,1,2,CXXBLACS_M,CXXBLACS_N);
+TEST_IMPL(Gather_2x1_RectangularMatrix_BS,2,1,CXXBLACS_M,CXXBLACS_N);
 
-TEST_IMPL(Scatter_2x2_RectangularMatrix_SB,2,2,CXXBLACS_N,CXXBLACS_M);
-TEST_IMPL(Scatter_1x2_RectangularMatrix_SB,1,2,CXXBLACS_N,CXXBLACS_M);
-TEST_IMPL(Scatter_2x1_RectangularMatrix_SB,2,1,CXXBLACS_N,CXXBLACS_M);
+TEST_IMPL(Gather_2x2_RectangularMatrix_SB,2,2,CXXBLACS_N,CXXBLACS_M);
+TEST_IMPL(Gather_1x2_RectangularMatrix_SB,1,2,CXXBLACS_N,CXXBLACS_M);
+TEST_IMPL(Gather_2x1_RectangularMatrix_SB,2,1,CXXBLACS_N,CXXBLACS_M);
 
 
 BOOST_AUTO_TEST_SUITE_END()

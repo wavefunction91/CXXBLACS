@@ -18,7 +18,7 @@
 #
 #
 
-add_executable( scatter_gather_test ../ut.cxx scatter.cxx )
+add_executable( scatter_gather_test ../ut.cxx scatter.cxx gather.cxx )
 
 target_compile_definitions(scatter_gather_test PUBLIC 
   BOOST_TEST_MODULE=SCATTER_GATHER)
@@ -28,6 +28,10 @@ target_link_libraries( scatter_gather_test PUBLIC ${CXXBLACS_LINKER} )
 
 
 
-add_test( NAME SCATTER_SQP COMMAND ${MPIEXEC} -np 4 "./scatter_gather_test" )
-add_test( NAME SCATTER_RTP COMMAND ${MPIEXEC} -np 2 "./scatter_gather_test" )
-add_test( NAME SCATTER_SER COMMAND ${MPIEXEC} -np 1 "./scatter_gather_test" )
+add_test( NAME SCATTER_SQP COMMAND ${MPIEXEC} -np 4 "./scatter_gather_test" "--run_test=SCATTER" )
+add_test( NAME SCATTER_RTP COMMAND ${MPIEXEC} -np 2 "./scatter_gather_test" "--run_test=SCATTER" )
+add_test( NAME SCATTER_SER COMMAND ${MPIEXEC} -np 1 "./scatter_gather_test" "--run_test=SCATTER" )
+
+add_test( NAME GATHER_SQP COMMAND ${MPIEXEC} -np 4 "./scatter_gather_test" "--run_test=GATHER" )
+add_test( NAME GATHER_RTP COMMAND ${MPIEXEC} -np 2 "./scatter_gather_test" "--run_test=GATHER" )
+add_test( NAME GATHER_SER COMMAND ${MPIEXEC} -np 1 "./scatter_gather_test" "--run_test=GATHER" )
