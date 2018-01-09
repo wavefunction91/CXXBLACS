@@ -32,3 +32,4 @@ doc
 .*.swp
 
 old/
+*build*/
