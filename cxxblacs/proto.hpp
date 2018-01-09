@@ -70,7 +70,30 @@ extern "C" {
   gesum(std::complex<double>,zgsum2d_);
 
 
+  // Broadcast send
+  #define gebs2d(F,FUNC) \
+  void FUNC(const CB_INT *, const char*, const char*, const CB_INT*,\
+    const CB_INT*, const F *, const CB_INT*);
 
+  gebs2d(float               ,sgebs2d_);
+  gebs2d(double              ,dgebs2d_);
+  gebs2d(std::complex<float> ,cgebs2d_);
+  gebs2d(std::complex<double>,zgebs2d_);
+
+
+  // Broadcast recv
+  #define gebr2d(F,FUNC) \
+  void FUNC(const CB_INT *, const char*, const char*, const CB_INT*,\
+    const CB_INT*, const F *, const CB_INT*, const CB_INT *, const CB_INT*);
+
+  gebr2d(float               ,sgebr2d_);
+  gebr2d(double              ,dgebr2d_);
+  gebr2d(std::complex<float> ,cgebr2d_);
+  gebr2d(std::complex<double>,zgebr2d_);
+    
+    
+    
+    
 
   // ScaLAPACK + PBLAS
       

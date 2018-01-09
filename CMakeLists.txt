@@ -66,12 +66,24 @@ include_directories( ${Boost_INCLUDE_DIRS}   ) # Boost Headers
 # Link
 set( CXXBLACS_LINKER ${MPI_CXX_LIBRARIES}      ) # MPI Libs
 list(APPEND CXXBLACS_LINKER ${Boost_LIBRARIES} ) # Boost Libs
+
+# BLACS
 if( CXXBLACS_BLACS_LIBRARIES )
   list(APPEND CXXBLACS_LINKER ${CXXBLACS_BLACS_LIBRARIES} ) # BLACS Libs
 else()
   message( FATAL_ERROR 
     "User Must Specify A Valid BLACS Library -DCXXBLACS_BLACS_LIBRARIES=...")
 endif()
+
+# ScaLAPACK
+if( CXXBLACS_SCALAPACK_LIBRARIES )
+  list(APPEND CXXBLACS_LINKER ${CXXBLACS_SCALAPACK_LIBRARIES} ) # SCALAPACK Libs
+else()
+  message( FATAL_ERROR 
+    "User Must Specify A Valid ScaLAPACK Library -DCXXBLACS_SCALAPACK_LIBRARIES=...")
+endif()
+
+
 
 enable_testing()
 add_subdirectory( tests )

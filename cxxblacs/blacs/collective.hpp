@@ -34,25 +34,63 @@ namespace CXXBLACS {
    * See BLACS Documentaion for specifics.
    */
   template<typename Field>
-  inline void GSUM2D(const int ICONTXT, const char SCOPE[], 
-    const char TOP[], const int M, const int N, Field *A, const int LDA,
-    const int RDest, const int CDest);
+  inline void GSUM2D(const CB_INT ICONTXT, const char SCOPE[], 
+    const char TOP[], const CB_INT M, const CB_INT N, Field *A, 
+    const CB_INT LDA, const CB_INT RDest, const CB_INT CDest);
   
-  // Specializations
-
   #define GSUM2D_IMPL(FIELD,FUNC)\
     template<>\
-    inline void GSUM2D(const int ICONTXT, const char SCOPE[], \
-      const char TOP[], const int M, const int N, FIELD *A, const int LDA,\
-      const int RDest, const int CDest) {\
+    inline void GSUM2D(const CB_INT ICONTXT, const char SCOPE[], \
+      const char TOP[], const CB_INT M, const CB_INT N, FIELD *A,\
+      const CB_INT LDA, const CB_INT RDest, const CB_INT CDest) {\
         FUNC(&ICONTXT,SCOPE,TOP,&M,&N,A,&LDA,&RDest,&CDest);\
     }
 
-  GSUM2D_IMPL(int                 ,igsum2d_);
+  GSUM2D_IMPL(CB_INT              ,igsum2d_);
   GSUM2D_IMPL(float               ,sgsum2d_);
   GSUM2D_IMPL(double              ,dgsum2d_);
   GSUM2D_IMPL(std::complex<float> ,cgsum2d_);
   GSUM2D_IMPL(std::complex<double>,zgsum2d_);
+
+
+  // Broadcast Send
+  template<typename Field>
+  inline void GEBS2D(const CB_INT ICONTXT, const char SCOPE[], 
+    const char TOP[], const CB_INT M, const CB_INT N, Field *A, 
+    const CB_INT LDA);
+
+  #define GEBS2D_IMPL(FIELD,FUNC)\
+    template<>\
+    inline void GEBS2D(const CB_INT ICONTXT, const char SCOPE[], \
+      const char TOP[], const CB_INT M, const CB_INT N, FIELD *A,\
+      const CB_INT LDA) {\
+        FUNC(&ICONTXT,SCOPE,TOP,&M,&N,A,&LDA);\
+    }
+
+  GEBS2D_IMPL(float               ,sgebs2d_);
+  GEBS2D_IMPL(double              ,dgebs2d_);
+  GEBS2D_IMPL(std::complex<float> ,cgebs2d_);
+  GEBS2D_IMPL(std::complex<double>,zgebs2d_);
+
+
+  // Broadcast Send
+  template<typename Field>
+  inline void GEBR2D(const CB_INT ICONTXT, const char SCOPE[], 
+    const char TOP[], const CB_INT M, const CB_INT N, Field *A, 
+    const CB_INT LDA, const CB_INT RSrc, const CB_INT CSrc);
+  
+  #define GEBR2D_IMPL(FIELD,FUNC)\
+    template<>\
+    inline void GEBR2D(const CB_INT ICONTXT, const char SCOPE[], \
+      const char TOP[], const CB_INT M, const CB_INT N, FIELD *A,\
+      const CB_INT LDA, const CB_INT RSrc, const CB_INT CSrc) {\
+        FUNC(&ICONTXT,SCOPE,TOP,&M,&N,A,&LDA,&RSrc,&CSrc);\
+    }
+
+  GEBR2D_IMPL(float               ,sgebr2d_);
+  GEBR2D_IMPL(double              ,dgebr2d_);
+  GEBR2D_IMPL(std::complex<float> ,cgebr2d_);
+  GEBR2D_IMPL(std::complex<double>,zgebr2d_);
 
 };
 

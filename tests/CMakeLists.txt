@@ -19,5 +19,6 @@
 #
 
 add_subdirectory(scatter_gather)
+add_subdirectory(scalapack)
 
 

@@ -28,7 +28,7 @@ namespace CXXBLACS {
    *
    * See BLACS Documentaion
    */
-  inline void BlacsPINFO(int &IAM, int &NPROCS){
+  inline void BlacsPINFO(CB_INT &IAM, CB_INT &NPROCS){
     blacs_pinfo_(&IAM,&NPROCS);
   }
 
@@ -39,8 +39,8 @@ namespace CXXBLACS {
    *
    * See BLACS Documentation.
    */
-  inline int BlacsGet(const int ICONTXT, const int WHAT){
-    int VAL;
+  inline CB_INT BlacsGet(const CB_INT ICONTXT, const CB_INT WHAT){
+    CB_INT VAL;
     blacs_get_(&ICONTXT,&WHAT,&VAL);
     return VAL;
   }
@@ -53,8 +53,8 @@ namespace CXXBLACS {
    *
    * See BLACS Documentation.
    */
-  inline void BlacsGridInit(int &ICONTXT, const char ORDER[], 
-    const int NPROW, const int NPCOL){
+  inline void BlacsGridInit(CB_INT &ICONTXT, const char ORDER[], 
+    const CB_INT NPROW, const CB_INT NPCOL){
     blacs_gridinit_(&ICONTXT,ORDER,&NPROW,&NPCOL);
   }
 
@@ -67,8 +67,8 @@ namespace CXXBLACS {
    * See BLACS Documentation.
    */
   
-  inline void BlacsGridInfo(const int ICONTXT, const int NPROW, 
-    const int NPCOL, int &MYROW, int &MYCOL) {
+  inline void BlacsGridInfo(const CB_INT ICONTXT, const CB_INT NPROW, 
+    const CB_INT NPCOL, CB_INT &MYROW, CB_INT &MYCOL) {
     blacs_gridinfo_(&ICONTXT,&NPROW,&NPCOL,&MYROW,&MYCOL);
   }
 
@@ -80,7 +80,7 @@ namespace CXXBLACS {
    *
    * See BLACS Documentaion
    */
-  inline void BlacsBarrier(const int ICONTXT, const char SCOPE[]){
+  inline void BlacsBarrier(const CB_INT ICONTXT, const char SCOPE[]){
     blacs_barrier_(&ICONTXT,SCOPE);
   }
 
@@ -92,7 +92,7 @@ namespace CXXBLACS {
    *
    * See BLACS Documentaion
    */
-  inline void BlacsGridExit(const int ICONTXT){
+  inline void BlacsGridExit(const CB_INT ICONTXT){
     blacs_gridexit_(&ICONTXT);
   }
 
@@ -105,7 +105,7 @@ namespace CXXBLACS {
    *
    * See BLACS Documentaion
    */
-  inline void BlacsExit(const int CONTINUE){
+  inline void BlacsExit(const CB_INT CONTINUE){
     blacs_exit_(&CONTINUE);
   }
 

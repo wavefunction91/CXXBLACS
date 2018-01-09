@@ -129,6 +129,9 @@ namespace CXXBLACS {
     };
 
 
+    //~BlacsGrid(){ BlacsGridExit(IContxt_); }
+
+
 
 
     // Getters 
@@ -251,6 +254,18 @@ namespace CXXBLACS {
     }
 
 
+    // Broadcast
+    template <typename Field>
+    inline void Broadcast(const char SCOPE[], const char TOP[], const CB_INT M,
+      const CB_INT N, Field *A, const CB_INT LDA, const CB_INT ISRC, 
+      const CB_INT JSRC) {
+
+      if( iProcRow_ == ISRC and iProcCol_ == JSRC )
+        GEBS2D(IContxt_,SCOPE,TOP,M,N,A,LDA);
+      else
+        GEBR2D(IContxt_,SCOPE,TOP,M,N,A,LDA,ISRC,JSRC);
+
+    };
 
 
     // Scatter / Gather
