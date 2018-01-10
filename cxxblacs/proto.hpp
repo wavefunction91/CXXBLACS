@@ -115,6 +115,17 @@ extern "C" {
 
 
 
+  #define pgemr2d(F,FUNC)\
+  void FUNC(const CB_INT*, const CB_INT*,\
+    const F*, const CB_INT*, const CB_INT*, const CB_INT*,\
+    F*, const CB_INT*, const CB_INT*, const CB_INT*,\
+    const CB_INT*);
+
+  pgemr2d(float               ,psgemr2d_);
+  pgemr2d(double              ,pdgemr2d_);
+  pgemr2d(std::complex<float> ,pcgemr2d_);
+  pgemr2d(std::complex<double>,pzgemr2d_);
+
 
   // LAPACK + BLAS
     

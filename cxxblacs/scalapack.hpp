@@ -63,6 +63,38 @@ namespace CXXBLACS {
 
   }
 
+
+
+
+
+  template <typename Field>
+  inline void PGEMR2D(const CB_INT M, const CB_INT N, const Field *A,
+    const CB_INT IA, const CB_INT JA, const CB_INT *DESCA, Field *B,
+    const CB_INT IB, const CB_INT JB, const CB_INT *DESCB, const CB_INT ICTXT);
+
+  #define PGEMR2D_IMPL(F,FUNC)\
+  template <>\
+  inline void PGEMR2D(const CB_INT M, const CB_INT N, const F *A,\
+    const CB_INT IA, const CB_INT JA, const CB_INT *DESCA, F *B,\
+    const CB_INT IB, const CB_INT JB, const CB_INT *DESCB, const CB_INT ICTXT){\
+    \
+    FUNC(&M,&N,A,&IA,&JA,DESCA,B,&IB,&JB,DESCB,&ICTXT);\
+  }
+
+  PGEMR2D_IMPL(float               ,psgemr2d_);
+  PGEMR2D_IMPL(double              ,pdgemr2d_);
+  PGEMR2D_IMPL(std::complex<float> ,pcgemr2d_);
+  PGEMR2D_IMPL(std::complex<double>,pzgemr2d_);
+
+  template <typename Field>
+  inline void PGEMR2D(const CB_INT M, const CB_INT N, const Field *A,
+    const CB_INT IA, const CB_INT JA, const ScaLAPACK_Desc_t DESCA, Field *B,
+    const CB_INT IB, const CB_INT JB, const ScaLAPACK_Desc_t DESCB, const CB_INT ICTXT) {
+
+    PGEMR2D(M,N,A,IA,JA,&DESCA[0],B,IB,JB,&DESCB[0],ICTXT);
+
+  }
+
 };
 
 

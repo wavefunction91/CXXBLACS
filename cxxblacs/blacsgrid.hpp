@@ -113,8 +113,10 @@ namespace CXXBLACS {
 
       }
 
-      BlacsPINFO(iProc_,nProc_); // Get global MPI info
-      IContxt_ = BlacsGet(-1,0); // Setup BLACS context
+      // Get the MPI info and system context
+      MPI_Comm_rank(comm_,&iProc_);
+      MPI_Comm_size(comm_,&nProc_);
+      IContxt_ = comm_;
 
       // Make as close to a square grid as possible
       nProcRow_ = int(std::sqrt(nProc_));
@@ -466,6 +468,9 @@ namespace CXXBLACS {
     };
 
   };
+
+
+
 
 }; // CXXBLACS
 
