@@ -35,21 +35,21 @@ namespace CXXBLACS {
    * See BLACS Documentaion for specifics.
    */
   template<typename Field>
-  inline void GESD2D(const int ICONTXT, const int M, const int N,
-    const Field *A, const int LDA, const int RDest, const int CDest);
+  inline void GESD2D(const CB_INT ICONTXT, const CB_INT M, const CB_INT N,
+    const Field *A, const CB_INT LDA, const CB_INT RDest, const CB_INT CDest);
 
 
 
 
   #define GESD2D_IMPL(FIELD,FUNC)\
   template<>\
-  inline void GESD2D(const int ICONTXT, const int M, const int N,\
-    const FIELD *A, const int LDA, const int RDest, const int CDest){\
+  inline void GESD2D(const CB_INT ICONTXT, const CB_INT M, const CB_INT N,\
+    const FIELD *A, const CB_INT LDA, const CB_INT RDest, const CB_INT CDest){\
       FUNC(&ICONTXT,&M,&N,A,&LDA,&RDest,&CDest);\
   }
 
 
-  GESD2D_IMPL(int                 ,igesd2d_);
+  GESD2D_IMPL(CB_INT              ,igesd2d_);
   GESD2D_IMPL(float               ,sgesd2d_);
   GESD2D_IMPL(double              ,dgesd2d_);
   GESD2D_IMPL(std::complex<float> ,cgesd2d_);
@@ -70,21 +70,21 @@ namespace CXXBLACS {
    * See BLACS Documentaion for specifics.
    */
   template<typename Field>
-  inline void GERV2D(const int ICONTXT, const int M, const int N,
-    Field *A, const int LDA, const int RDest, const int CDest);
+  inline void GERV2D(const CB_INT ICONTXT, const CB_INT M, const CB_INT N,
+    Field *A, const CB_INT LDA, const CB_INT RDest, const CB_INT CDest);
 
 
 
   #define GERV2D_IMPL(FIELD,FUNC)\
   template<>\
-  inline void GERV2D(const int ICONTXT, const int M, const int N,\
-    FIELD *A, const int LDA, const int RDest, const int CDest){\
+  inline void GERV2D(const CB_INT ICONTXT, const CB_INT M, const CB_INT N,\
+    FIELD *A, const CB_INT LDA, const CB_INT RDest, const CB_INT CDest){\
       FUNC(&ICONTXT,&M,&N,A,&LDA,&RDest,&CDest);\
   }
 
   
 
-  GERV2D_IMPL(int                 ,igerv2d_);
+  GERV2D_IMPL(CB_INT              ,igerv2d_);
   GERV2D_IMPL(float               ,sgerv2d_);
   GERV2D_IMPL(double              ,dgerv2d_);
   GERV2D_IMPL(std::complex<float> ,cgerv2d_);

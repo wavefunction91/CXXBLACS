@@ -114,8 +114,11 @@ namespace CXXBLACS {
       }
 
       // Get the MPI info and system context
-      MPI_Comm_rank(comm_,&iProc_);
-      MPI_Comm_size(comm_,&nProc_);
+      int IPROC, NPROC; // for 64-bit ints
+      MPI_Comm_rank(comm_,&IPROC);
+      MPI_Comm_size(comm_,&NPROC);
+      iProc_ = IPROC;
+      nProc_ = NPROC;
       IContxt_ = comm_;
 
       // Make as close to a square grid as possible
