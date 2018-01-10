@@ -92,6 +92,14 @@ extern "C" {
   gebr2d(std::complex<double>,zgebr2d_);
     
     
+
+
+
+
+
+
+
+
     
     
 
@@ -125,6 +133,33 @@ extern "C" {
   pgemr2d(double              ,pdgemr2d_);
   pgemr2d(std::complex<float> ,pcgemr2d_);
   pgemr2d(std::complex<double>,pzgemr2d_);
+
+
+  #define psyev(F,FUNC)\
+  void FUNC(const char*, const char*, const CB_INT*, F*, const CB_INT*, \
+    const CB_INT*, const CB_INT*, F*, F*, const CB_INT*, const CB_INT*,\
+    const CB_INT*, F*, const CB_INT*, CB_INT*);
+
+  #define pheev(F,RF,FUNC)\
+  void FUNC(const char*, const char*, const CB_INT*, F*, const CB_INT*, \
+    const CB_INT*, const CB_INT*, RF*, F*, const CB_INT*, const CB_INT*,\
+    const CB_INT*, F*, const CB_INT*, RF*, const CB_INT*, CB_INT*);
+
+  psyev(float ,pssyev_);
+  psyev(double,pdsyev_);
+
+  pheev(std::complex<float> ,float ,pcheev_);
+  pheev(std::complex<double>,double,pzheev_);
+
+
+
+
+
+
+
+
+
+
 
 
   // LAPACK + BLAS

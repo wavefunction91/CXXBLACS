@@ -89,11 +89,71 @@ namespace CXXBLACS {
   template <typename Field>
   inline void PGEMR2D(const CB_INT M, const CB_INT N, const Field *A,
     const CB_INT IA, const CB_INT JA, const ScaLAPACK_Desc_t DESCA, Field *B,
-    const CB_INT IB, const CB_INT JB, const ScaLAPACK_Desc_t DESCB, const CB_INT ICTXT) {
+    const CB_INT IB, const CB_INT JB, const ScaLAPACK_Desc_t DESCB, 
+    const CB_INT ICTXT) {
 
     PGEMR2D(M,N,A,IA,JA,&DESCA[0],B,IB,JB,&DESCB[0],ICTXT);
 
   }
+
+
+
+
+  template <typename Field>
+  inline CB_INT PSYEV(const char JOBZ, const char UPLO, const CB_INT N,
+    Field *A, const CB_INT IA, const CB_INT JA, const CB_INT *DESCA,
+    Field *W, Field *Z, const CB_INT IZ, const CB_INT JZ, const CB_INT *DESCZ,
+    Field *WORK, const CB_INT LWORK);
+
+  template <typename Field, typename RealField>
+  inline CB_INT PHEEV(const char JOBZ, const char UPLO, const CB_INT N,
+    Field *A, const CB_INT IA, const CB_INT JA, const CB_INT *DESCA,
+    RealField *W, Field *Z, const CB_INT IZ, const CB_INT JZ, 
+    const CB_INT *DESCZ, Field *WORK, const CB_INT LWORK, RealField *RWORK,
+    const CB_INT LRWORK);
+
+  #define PSYEV_IMPL(F,FUNC)\
+  template <>\
+  inline CB_INT PSYEV(const char JOBZ, const char UPLO, const CB_INT N,\
+    F *A, const CB_INT IA, const CB_INT JA, const CB_INT *DESCA,\
+    F *W, F *Z, const CB_INT IZ, const CB_INT JZ, const CB_INT *DESCZ,\
+    F *WORK, const CB_INT LWORK) {\
+    \
+    if( DESCA[4] != DESCA[5] ) {\
+      std::runtime_error err("MB must be the same as NB in P?SYEV");\
+      throw err;\
+    }\
+    CB_INT INFO;\
+    FUNC(&JOBZ,&UPLO,&N,A,&IA,&JA,DESCA,W,Z,&IZ,&JZ,DESCZ,WORK,&LWORK,&INFO);\
+    return INFO;\
+    \
+  }
+
+  #define PHEEV_IMPL(F,RF,FUNC)\
+  template <>\
+  inline CB_INT PHEEV(const char JOBZ, const char UPLO, const CB_INT N,\
+    F *A, const CB_INT IA, const CB_INT JA, const CB_INT *DESCA,\
+    RF *W, F *Z, const CB_INT IZ, const CB_INT JZ, const CB_INT *DESCZ,\
+    F *WORK, const CB_INT LWORK, RF* RWORK, const CB_INT LRWORK) {\
+    \
+    if( DESCA[4] != DESCA[5] ) {\
+      std::runtime_error err("MB must be the same as NB in P?HEEV");\
+      throw err;\
+    }\
+    CB_INT INFO;\
+    FUNC(&JOBZ,&UPLO,&N,A,&IA,&JA,DESCA,W,Z,&IZ,&JZ,DESCZ,WORK,&LWORK,\
+      RWORK,&LRWORK,&INFO);\
+    return INFO;\
+    \
+  }
+
+  PSYEV_IMPL(float ,pssyev_);
+  PSYEV_IMPL(double,pdsyev_);
+
+  PHEEV_IMPL(std::complex<float> ,float ,pcheev_);
+  PHEEV_IMPL(std::complex<double>,double,pzheev_);
+
+
 
 };
 
