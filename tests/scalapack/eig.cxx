@@ -154,7 +154,7 @@ void pheev_test( CB_INT N ) {
   // Get DESC
   auto DescA = grid.descInit(N,N,0,0,MLoc);
 
-  // Form Random symmetic matrix on root process
+  // Form Random hermetian matrix on root process
   RootExecute(MPI_COMM_WORLD,[&]() {
 
     A.resize(N*N);

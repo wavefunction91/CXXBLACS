@@ -154,7 +154,15 @@ extern "C" {
 
 
 
+  #define pgesv(F,FUNC)\
+  void FUNC(const CB_INT*, const CB_INT*, F*, const CB_INT*, const CB_INT*, \
+    const CB_INT*, const CB_INT*, F*, const CB_INT*, const CB_INT*,\
+    const CB_INT*, CB_INT*);
 
+  pgesv(float               ,psgesv_);
+  pgesv(double              ,pdgesv_);
+  pgesv(std::complex<float> ,pcgesv_);
+  pgesv(std::complex<double>,pzgesv_);
 
 
 

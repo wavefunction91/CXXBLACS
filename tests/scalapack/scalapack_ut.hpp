@@ -29,6 +29,8 @@ constexpr CB_INT CXXBLACS_M = 200;
 constexpr CB_INT CXXBLACS_N = 150;
 constexpr CB_INT CXXBLACS_K = 7;
 
+constexpr CB_INT CXXBLACS_NRHS = 15;
+
 static std::default_random_engine gen;
 
 namespace CXXBLACS {

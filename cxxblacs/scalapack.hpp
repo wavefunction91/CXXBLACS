@@ -153,6 +153,66 @@ namespace CXXBLACS {
   PHEEV_IMPL(std::complex<float> ,float ,pcheev_);
   PHEEV_IMPL(std::complex<double>,double,pzheev_);
 
+  template <typename Field>
+  inline CB_INT PSYEV(const char JOBZ, const char UPLO, const CB_INT N,
+    Field *A, const CB_INT IA, const CB_INT JA, const ScaLAPACK_Desc_t DESCA,
+    Field *W, Field *Z, const CB_INT IZ, const CB_INT JZ, 
+    const ScaLAPACK_Desc_t DESCZ, Field *WORK, const CB_INT LWORK) {
+
+    return PSYEV(JOBZ,UPLO,N,A,IA,JA,&DESCA[0],W,Z,IZ,JZ,&DESCZ[0],WORK,LWORK);
+
+  }
+
+  template <typename Field, typename RealField>
+  inline CB_INT PHEEV(const char JOBZ, const char UPLO, const CB_INT N,
+    Field *A, const CB_INT IA, const CB_INT JA, const ScaLAPACK_Desc_t DESCA,
+    RealField *W, Field *Z, const CB_INT IZ, const CB_INT JZ, 
+    const ScaLAPACK_Desc_t DESCZ, Field *WORK, const CB_INT LWORK, 
+    RealField *RWORK, const CB_INT LRWORK) {
+
+    return PHEEV(JOBZ,UPLO,N,A,IA,JA,&DESCA[0],W,Z,IZ,JZ,&DESCZ[0],WORK,LWORK,
+        RWORK,LRWORK);
+
+  }
+
+
+
+
+
+  template <typename Field>
+  inline CB_INT PGESV(const CB_INT N, const CB_INT NRHS, Field *A, 
+    const CB_INT IA, const CB_INT JA, const CB_INT *DESCA, 
+    const CB_INT *IPIV, Field *B, const CB_INT IB, const CB_INT JB,
+    const CB_INT *DESCB);
+
+  #define PGESV_IMPL(F,FUNC)\
+  template <>\
+  inline CB_INT PGESV(const CB_INT N, const CB_INT NRHS, F *A, \
+    const CB_INT IA, const CB_INT JA, const CB_INT *DESCA, \
+    const CB_INT *IPIV, F *B, const CB_INT IB, const CB_INT JB,\
+    const CB_INT *DESCB) {\
+    \
+    CB_INT INFO;\
+    FUNC(&N,&NRHS,A,&IA,&JA,DESCA,IPIV,B,&IB,&JB,DESCB,&INFO);\
+    return INFO;\
+    \
+  }
+
+  PGESV_IMPL(float               ,psgesv_);
+  PGESV_IMPL(double              ,pdgesv_);
+  PGESV_IMPL(std::complex<float> ,pcgesv_);
+  PGESV_IMPL(std::complex<double>,pzgesv_);
+
+  template <typename Field>
+  inline CB_INT PGESV(const CB_INT N, const CB_INT NRHS, Field *A, 
+    const CB_INT IA, const CB_INT JA, const ScaLAPACK_Desc_t DESCA, 
+    const CB_INT *IPIV, Field *B, const CB_INT IB, const CB_INT JB,
+    const ScaLAPACK_Desc_t DESCB) {
+
+    return PGESV(N,NRHS,A,IA,JA,&DESCA[0],IPIV,B,IB,JB,&DESCB[0]);
+
+  }
+
 
 
 };
