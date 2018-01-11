@@ -36,7 +36,7 @@ namespace CXXBLACS {
    */
   template<typename Field>
   inline void GESD2D(const CB_INT ICONTXT, const CB_INT M, const CB_INT N,
-    const Field *A, const CB_INT LDA, const CB_INT RDest, const CB_INT CDest);
+    Field *A, const CB_INT LDA, const CB_INT RDest, const CB_INT CDest);
 
 
 
@@ -44,7 +44,7 @@ namespace CXXBLACS {
   #define GESD2D_IMPL(FIELD,FUNC)\
   template<>\
   inline void GESD2D(const CB_INT ICONTXT, const CB_INT M, const CB_INT N,\
-    const FIELD *A, const CB_INT LDA, const CB_INT RDest, const CB_INT CDest){\
+    FIELD *A, const CB_INT LDA, const CB_INT RDest, const CB_INT CDest){\
       FUNC(&ICONTXT,&M,&N,A,&LDA,&RDest,&CDest);\
   }
 
@@ -64,8 +64,8 @@ namespace CXXBLACS {
    * \brief C++ Wrapper for ?GERV2D
    *
    * A templated function that encompasses the functionaliy of all of the BLACS
-   * point-to-point recieve routines: [I/S/D/C/Z]GERV2D. Template deduction is based
-   * on inut parameters
+   * point-to-point recieve routines: [I/S/D/C/Z]GERV2D. Template deduction is 
+   * based on inut parameters
    *
    * See BLACS Documentaion for specifics.
    */

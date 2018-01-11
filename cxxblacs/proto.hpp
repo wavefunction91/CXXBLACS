@@ -26,11 +26,23 @@
 
 extern "C" {
 
+#ifndef CXXBLACS_HAS_BLACS
+#define CXXBLACS_HAX_BLACS
+
+
+  #ifndef CXXBLACS_BLACS_Complex16
+    #define CXXBLACS_BLACS_Complex16 std::complex<double>
+  #endif
+
+  #ifndef CXXBLACS_BLACS_Complex8
+    #define CXXBLACS_BLACS_Complex8 std::complex<float>
+  #endif
+
   // BLACS grid info
   void blacs_pinfo_(CB_INT*,CB_INT*);
   void blacs_get_(const CB_INT*,const CB_INT*,CB_INT*);
   void blacs_gridinit_(CB_INT*,const char*,const CB_INT*,const CB_INT*);
-  void blacs_gridinfo_(const CB_INT*,const CB_INT*,const CB_INT*,CB_INT*,CB_INT*);
+  void blacs_gridinfo_(const CB_INT*,CB_INT*,CB_INT*,CB_INT*,CB_INT*);
   void blacs_barrier_(const CB_INT*,const char*);
   void blacs_gridexit_(const CB_INT*);
   void blacs_exit_(const CB_INT*);
@@ -39,20 +51,20 @@ extern "C" {
 
   // BLACS Point-to-point communication
   #define gesd_rv2d(F,FUNC) \
-  void FUNC(const CB_INT*, const CB_INT *, const CB_INT *, const F *, \
+  void FUNC(const CB_INT*, const CB_INT *, const CB_INT *, F *, \
     const CB_INT*, const CB_INT *, const CB_INT *);
 
-  gesd_rv2d(CB_INT              ,igesd2d_);
-  gesd_rv2d(float               ,sgesd2d_);
-  gesd_rv2d(double              ,dgesd2d_);
-  gesd_rv2d(std::complex<float> ,cgesd2d_);
-  gesd_rv2d(std::complex<double>,zgesd2d_);
+  gesd_rv2d(CB_INT                  ,igesd2d_);
+  gesd_rv2d(float                   ,sgesd2d_);
+  gesd_rv2d(double                  ,dgesd2d_);
+  gesd_rv2d(CXXBLACS_BLACS_Complex8 ,cgesd2d_);
+  gesd_rv2d(CXXBLACS_BLACS_Complex16,zgesd2d_);
 
-  gesd_rv2d(CB_INT              ,igerv2d_);
-  gesd_rv2d(float               ,sgerv2d_);
-  gesd_rv2d(double              ,dgerv2d_);
-  gesd_rv2d(std::complex<float> ,cgerv2d_);
-  gesd_rv2d(std::complex<double>,zgerv2d_);
+  gesd_rv2d(CB_INT                  ,igerv2d_);
+  gesd_rv2d(float                   ,sgerv2d_);
+  gesd_rv2d(double                  ,dgerv2d_);
+  gesd_rv2d(CXXBLACS_BLACS_Complex8 ,cgerv2d_);
+  gesd_rv2d(CXXBLACS_BLACS_Complex16,zgerv2d_);
 
 
 
@@ -63,11 +75,11 @@ extern "C" {
   void FUNC(const CB_INT*, const char*, const char*, const CB_INT*, \
     const CB_INT*, F*, const CB_INT*, const CB_INT*, const CB_INT*);
 
-  gesum(CB_INT              ,igsum2d_);
-  gesum(float               ,sgsum2d_);
-  gesum(double              ,dgsum2d_);
-  gesum(std::complex<float> ,cgsum2d_);
-  gesum(std::complex<double>,zgsum2d_);
+  gesum(CB_INT                  ,igsum2d_);
+  gesum(float                   ,sgsum2d_);
+  gesum(double                  ,dgsum2d_);
+  gesum(CXXBLACS_BLACS_Complex8 ,cgsum2d_);
+  gesum(CXXBLACS_BLACS_Complex16,zgsum2d_);
 
 
   // Broadcast send
@@ -75,10 +87,10 @@ extern "C" {
   void FUNC(const CB_INT *, const char*, const char*, const CB_INT*,\
     const CB_INT*, const F *, const CB_INT*);
 
-  gebs2d(float               ,sgebs2d_);
-  gebs2d(double              ,dgebs2d_);
-  gebs2d(std::complex<float> ,cgebs2d_);
-  gebs2d(std::complex<double>,zgebs2d_);
+  gebs2d(float                   ,sgebs2d_);
+  gebs2d(double                  ,dgebs2d_);
+  gebs2d(CXXBLACS_BLACS_Complex8 ,cgebs2d_);
+  gebs2d(CXXBLACS_BLACS_Complex16,zgebs2d_);
 
 
   // Broadcast recv
@@ -86,29 +98,25 @@ extern "C" {
   void FUNC(const CB_INT *, const char*, const char*, const CB_INT*,\
     const CB_INT*, const F *, const CB_INT*, const CB_INT *, const CB_INT*);
 
-  gebr2d(float               ,sgebr2d_);
-  gebr2d(double              ,dgebr2d_);
-  gebr2d(std::complex<float> ,cgebr2d_);
-  gebr2d(std::complex<double>,zgebr2d_);
+  gebr2d(float                   ,sgebr2d_);
+  gebr2d(double                  ,dgebr2d_);
+  gebr2d(CXXBLACS_BLACS_Complex8 ,cgebr2d_);
+  gebr2d(CXXBLACS_BLACS_Complex16,zgebr2d_);
     
-    
-
-
-
-
-
-
-
-
-    
+#endif
     
 
-  // ScaLAPACK + PBLAS
-      
-  void descinit_(CB_INT*, const CB_INT*, const CB_INT*, const CB_INT*,
-    const CB_INT*, const CB_INT*, const CB_INT*, const CB_INT*, 
-    const CB_INT*, const CB_INT*);
 
+
+
+
+
+#ifndef CXXBLACS_HAS_PBLAS
+#define CXXBLACS_HAS_PBLAS
+
+
+  // PBLAS
+    
   #define pgemm(F,FUNC)\
   void FUNC(const char*, const char*,\
     const CB_INT*, const CB_INT*,const CB_INT*, const F*,\
@@ -122,6 +130,17 @@ extern "C" {
   pgemm(std::complex<double>,pzgemm_);
 
 
+#endif
+
+    
+#ifndef CXXBLACS_HAS_SCALAPACK
+#define CXXBLACS_HAS_SCALAPACK
+
+  // ScaLAPACK
+      
+  void descinit_(CB_INT*, const CB_INT*, const CB_INT*, const CB_INT*,
+    const CB_INT*, const CB_INT*, const CB_INT*, const CB_INT*, 
+    const CB_INT*, const CB_INT*);
 
   #define pgemr2d(F,FUNC)\
   void FUNC(const CB_INT*, const CB_INT*,\
@@ -164,13 +183,15 @@ extern "C" {
   pgesv(std::complex<float> ,pcgesv_);
   pgesv(std::complex<double>,pzgesv_);
 
+#endif
 
 
 
 
+#ifndef CXXBLACS_HAS_LAPACK
+#define CXXBLACS_HAS_LAPACK
 
-
-  // LAPACK + BLAS
+  // LAPACK
     
   #define lacpy(F,FUNC)\
   void FUNC(const char*, const CB_INT*, const CB_INT*, F *, const CB_INT *,\
@@ -181,6 +202,10 @@ extern "C" {
   lacpy(std::complex<float> ,clacpy_);
   lacpy(std::complex<double>,zlacpy_);
 
+#endif
+
+#ifndef CXXBLACS_HAS_BLAS
+#define CXXBLACS_HAS_BLAS
 
   #define gemm(F,FUNC)\
   void FUNC(const char*, const char*, const CB_INT*, const CB_INT*,\
@@ -191,6 +216,8 @@ extern "C" {
   gemm(double              ,dgemm_);
   gemm(std::complex<float> ,cgemm_);
   gemm(std::complex<double>,zgemm_);
+
+#endif
 
 };
 

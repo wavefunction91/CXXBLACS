@@ -67,8 +67,8 @@ namespace CXXBLACS {
    * See BLACS Documentation.
    */
   
-  inline void BlacsGridInfo(const CB_INT ICONTXT, const CB_INT NPROW, 
-    const CB_INT NPCOL, CB_INT &MYROW, CB_INT &MYCOL) {
+  inline void BlacsGridInfo(const CB_INT ICONTXT, CB_INT NPROW, 
+    CB_INT NPCOL, CB_INT &MYROW, CB_INT &MYCOL) {
     blacs_gridinfo_(&ICONTXT,&NPROW,&NPCOL,&MYROW,&MYCOL);
   }
 
