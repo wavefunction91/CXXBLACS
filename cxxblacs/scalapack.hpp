@@ -182,7 +182,7 @@ namespace CXXBLACS {
   template <typename Field>
   inline CB_INT PGESV(const CB_INT N, const CB_INT NRHS, Field *A, 
     const CB_INT IA, const CB_INT JA, const CB_INT *DESCA, 
-    const CB_INT *IPIV, Field *B, const CB_INT IB, const CB_INT JB,
+    CB_INT *IPIV, Field *B, const CB_INT IB, const CB_INT JB,
     const CB_INT *DESCB);
 
   #define PGESV_IMPL(F,FUNC)\
