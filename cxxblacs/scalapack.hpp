@@ -189,7 +189,7 @@ namespace CXXBLACS {
   template <>\
   inline CB_INT PGESV(const CB_INT N, const CB_INT NRHS, F *A, \
     const CB_INT IA, const CB_INT JA, const CB_INT *DESCA, \
-    const CB_INT *IPIV, F *B, const CB_INT IB, const CB_INT JB,\
+    CB_INT *IPIV, F *B, const CB_INT IB, const CB_INT JB, \
     const CB_INT *DESCB) {\
     \
     CB_INT INFO;\
