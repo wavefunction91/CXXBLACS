@@ -45,7 +45,7 @@ namespace CXXBLACS {
   template<>\
   inline void GESD2D(const CB_INT ICONTXT, const CB_INT M, const CB_INT N,\
     FIELD *A, const CB_INT LDA, const CB_INT RDest, const CB_INT CDest){\
-      FUNC(&ICONTXT,&M,&N,A,&LDA,&RDest,&CDest);\
+      FUNC(&ICONTXT,&M,&N,ToBlacsType(A),&LDA,&RDest,&CDest);\
   }
 
 
@@ -79,7 +79,7 @@ namespace CXXBLACS {
   template<>\
   inline void GERV2D(const CB_INT ICONTXT, const CB_INT M, const CB_INT N,\
     FIELD *A, const CB_INT LDA, const CB_INT RDest, const CB_INT CDest){\
-      FUNC(&ICONTXT,&M,&N,A,&LDA,&RDest,&CDest);\
+      FUNC(&ICONTXT,&M,&N,ToBlacsType(A),&LDA,&RDest,&CDest);\
   }
 
   

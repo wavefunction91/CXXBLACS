@@ -43,7 +43,7 @@ namespace CXXBLACS {
     inline void GSUM2D(const CB_INT ICONTXT, const char SCOPE[], \
       const char TOP[], const CB_INT M, const CB_INT N, FIELD *A,\
       const CB_INT LDA, const CB_INT RDest, const CB_INT CDest) {\
-        FUNC(&ICONTXT,SCOPE,TOP,&M,&N,A,&LDA,&RDest,&CDest);\
+        FUNC(&ICONTXT,SCOPE,TOP,&M,&N,ToBlacsType(A),&LDA,&RDest,&CDest);\
     }
 
   GSUM2D_IMPL(CB_INT              ,igsum2d_);
@@ -64,7 +64,7 @@ namespace CXXBLACS {
     inline void GEBS2D(const CB_INT ICONTXT, const char SCOPE[], \
       const char TOP[], const CB_INT M, const CB_INT N, FIELD *A,\
       const CB_INT LDA) {\
-        FUNC(&ICONTXT,SCOPE,TOP,&M,&N,A,&LDA);\
+        FUNC(&ICONTXT,SCOPE,TOP,&M,&N,ToBlacsType(A),&LDA);\
     }
 
   GEBS2D_IMPL(float               ,sgebs2d_);
@@ -84,7 +84,7 @@ namespace CXXBLACS {
     inline void GEBR2D(const CB_INT ICONTXT, const char SCOPE[], \
       const char TOP[], const CB_INT M, const CB_INT N, FIELD *A,\
       const CB_INT LDA, const CB_INT RSrc, const CB_INT CSrc) {\
-        FUNC(&ICONTXT,SCOPE,TOP,&M,&N,A,&LDA,&RSrc,&CSrc);\
+        FUNC(&ICONTXT,SCOPE,TOP,&M,&N,ToBlacsType(A),&LDA,&RSrc,&CSrc);\
     }
 
   GEBR2D_IMPL(float               ,sgebr2d_);

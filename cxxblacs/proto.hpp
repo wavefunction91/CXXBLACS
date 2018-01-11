@@ -24,19 +24,12 @@
 
 // External function prototypes
 
-extern "C" {
 
 #ifndef CXXBLACS_HAS_BLACS
 #define CXXBLACS_HAX_BLACS
 
 
-  #ifndef CXXBLACS_BLACS_Complex16
-    #define CXXBLACS_BLACS_Complex16 std::complex<double>
-  #endif
-
-  #ifndef CXXBLACS_BLACS_Complex8
-    #define CXXBLACS_BLACS_Complex8 std::complex<float>
-  #endif
+extern "C" {
 
   // BLACS grid info
   void blacs_pinfo_(CB_INT*,CB_INT*);
@@ -102,6 +95,8 @@ extern "C" {
   gebr2d(double                  ,dgebr2d_);
   gebr2d(CXXBLACS_BLACS_Complex8 ,cgebr2d_);
   gebr2d(CXXBLACS_BLACS_Complex16,zgebr2d_);
+
+};
     
 #endif
     
@@ -114,6 +109,7 @@ extern "C" {
 #ifndef CXXBLACS_HAS_PBLAS
 #define CXXBLACS_HAS_PBLAS
 
+extern "C" {
 
   // PBLAS
     
@@ -129,12 +125,16 @@ extern "C" {
   pgemm(std::complex<float> ,pcgemm_);
   pgemm(std::complex<double>,pzgemm_);
 
+}
+
 
 #endif
 
     
 #ifndef CXXBLACS_HAS_SCALAPACK
 #define CXXBLACS_HAS_SCALAPACK
+
+extern "C" {
 
   // ScaLAPACK
       
@@ -183,6 +183,8 @@ extern "C" {
   pgesv(std::complex<float> ,pcgesv_);
   pgesv(std::complex<double>,pzgesv_);
 
+}
+
 #endif
 
 
@@ -190,6 +192,8 @@ extern "C" {
 
 #ifndef CXXBLACS_HAS_LAPACK
 #define CXXBLACS_HAS_LAPACK
+
+extern "C" {
 
   // LAPACK
     
@@ -202,10 +206,14 @@ extern "C" {
   lacpy(std::complex<float> ,clacpy_);
   lacpy(std::complex<double>,zlacpy_);
 
+}
+
 #endif
 
 #ifndef CXXBLACS_HAS_BLAS
 #define CXXBLACS_HAS_BLAS
+
+extern "C" {
 
   #define gemm(F,FUNC)\
   void FUNC(const char*, const char*, const CB_INT*, const CB_INT*,\
@@ -217,9 +225,9 @@ extern "C" {
   gemm(std::complex<float> ,cgemm_);
   gemm(std::complex<double>,zgemm_);
 
-#endif
+}
 
-};
+#endif
 
 #endif
 

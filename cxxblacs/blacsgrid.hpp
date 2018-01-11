@@ -245,7 +245,8 @@ namespace CXXBLACS {
     inline void Send(const CB_INT M, const CB_INT N, Field *A, const CB_INT LDA,
       const CB_INT DestRow, const CB_INT DestCol) const {
 
-      GESD2D(IContxt_,M,N,A,LDA,DestRow,DestCol);
+      auto a = const_cast<typename std::remove_cv<Field>::type *>(A);
+      GESD2D(IContxt_,M,N,a,LDA,DestRow,DestCol);
 
     }
 
@@ -254,7 +255,8 @@ namespace CXXBLACS {
     inline void Recv(const CB_INT M, const CB_INT N, Field *A, const CB_INT LDA,
       const CB_INT OrigRow, const CB_INT OrigCol) const {
 
-      GERV2D(IContxt_,M,N,A,LDA,OrigRow,OrigCol);
+      auto a = const_cast<typename std::remove_cv<Field>::type *>(A);
+      GERV2D(IContxt_,M,N,a,LDA,OrigRow,OrigCol);
 
     }
 

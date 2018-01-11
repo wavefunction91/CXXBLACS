@@ -34,12 +34,43 @@
   #define CB_INT int32_t
 #endif
 
+
+// BLACS types
+
+#ifndef CXXBLACS_BLACS_Complex16
+  #define CXXBLACS_BLACS_Complex16 std::complex<double>
+#endif
+
+#ifndef CXXBLACS_BLACS_Complex8
+  #define CXXBLACS_BLACS_Complex8 std::complex<float>
+#endif
+
 namespace CXXBLACS {
 
   typedef std::pair<CB_INT,CB_INT> INDX;
 
   static constexpr CB_INT DESCINIT_LEN_MAX = 9;
   typedef std::array<CB_INT,DESCINIT_LEN_MAX> ScaLAPACK_Desc_t;
+
+
+  // Type conversions for BLACS
+
+  template <typename T>
+  struct CXXBLACS_BLACS_TYPE { typedef T type; };
+
+  template <>
+  struct CXXBLACS_BLACS_TYPE<std::complex<double>> {
+    typedef CXXBLACS_BLACS_Complex16 type;
+  };
+
+  template <>
+  struct CXXBLACS_BLACS_TYPE<std::complex<float>> {
+    typedef CXXBLACS_BLACS_Complex8 type;
+  };
+
+  template <typename T, 
+            typename BLACS_TYPE = typename CXXBLACS_BLACS_TYPE<T>::type >
+  BLACS_TYPE* ToBlacsType(T* ptr){ return reinterpret_cast<BLACS_TYPE*>(ptr); }
 
 };
 
