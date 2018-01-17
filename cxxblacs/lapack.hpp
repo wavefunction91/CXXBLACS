@@ -64,6 +64,28 @@ namespace CXXBLACS {
   GEMM_IMPL(std::complex<double>,zgemm_);
 
 
+
+
+
+  template <typename Field>
+  void TRMM(const char SIDE, const char UPLO, const char TRANSA, 
+    const char DIAG, const CB_INT M, const CB_INT N, const Field ALPHA,
+    const Field *A, const CB_INT LDA, Field *B, const CB_INT LDB);
+
+
+  #define TRMM_IMPL(F,FUNC)\
+  template <>\
+  void TRMM(const char SIDE, const char UPLO, const char TRANSA, \
+    const char DIAG, const CB_INT M, const CB_INT N, const F ALPHA,\
+    const F *A, const CB_INT LDA, F *B, const CB_INT LDB){\
+    FUNC(&SIDE,&UPLO,&TRANSA,&DIAG,&M,&N,&ALPHA,A,&LDA,B,&LDB);\
+  }
+
+  TRMM_IMPL(float               ,strmm_);
+  TRMM_IMPL(double              ,dtrmm_);
+  TRMM_IMPL(std::complex<float> ,ctrmm_);
+  TRMM_IMPL(std::complex<double>,ztrmm_);
+
 };
 
 #endif

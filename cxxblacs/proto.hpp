@@ -125,6 +125,19 @@ extern "C" {
   pgemm(std::complex<float> ,pcgemm_);
   pgemm(std::complex<double>,pzgemm_);
 
+
+
+  #define ptrmm(F,FUNC)\
+  void FUNC(const char*, const char*, const char*, const char*,\
+    const CB_INT*, const CB_INT*, const F*, const F*, const CB_INT*,\
+    const CB_INT*, const CB_INT*, F*, const CB_INT*, const CB_INT*,\
+    const CB_INT*);
+
+  ptrmm(float               ,pstrmm_);
+  ptrmm(double              ,pdtrmm_);
+  ptrmm(std::complex<float> ,pctrmm_);
+  ptrmm(std::complex<double>,pztrmm_);
+
 }
 
 
@@ -183,6 +196,20 @@ extern "C" {
   pgesv(std::complex<float> ,pcgesv_);
   pgesv(std::complex<double>,pzgesv_);
 
+
+
+
+  #define ppotrf(F,FUNC)\
+  void FUNC(const char*, const CB_INT*, F*, const CB_INT*, const CB_INT*,\
+    const CB_INT*, CB_INT*);
+
+  ppotrf(float               ,pspotrf_);
+  ppotrf(double              ,pdpotrf_);
+  ppotrf(std::complex<float> ,pcpotrf_);
+  ppotrf(std::complex<double>,pzpotrf_);
+
+
+
 }
 
 #endif
@@ -224,6 +251,16 @@ extern "C" {
   gemm(double              ,dgemm_);
   gemm(std::complex<float> ,cgemm_);
   gemm(std::complex<double>,zgemm_);
+
+  #define trmm(F,FUNC)\
+  void FUNC(const char*, const char*, const char*, const char*,\
+    const CB_INT*, const CB_INT*, const F*, const F*, const CB_INT*,\
+    F*, const CB_INT*);
+      
+  trmm(float               ,strmm_);
+  trmm(double              ,dtrmm_);
+  trmm(std::complex<float> ,ctrmm_);
+  trmm(std::complex<double>,ztrmm_);
 
 }
 

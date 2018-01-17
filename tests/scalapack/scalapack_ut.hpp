@@ -39,25 +39,25 @@ namespace CXXBLACS {
   
   template <>
   inline double generate(){ 
-    std::uniform_real_distribution<double> dis(-10,10);
+    std::uniform_real_distribution<double> dis(-1,1);
     return dis(gen); 
   }
   
   template <>
   inline std::complex<double> generate(){ 
-    std::uniform_real_distribution<double> dis(-10,10);
+    std::uniform_real_distribution<double> dis(-1,1);
     return std::complex<double>(dis(gen),dis(gen)); 
   }
 
   template <>
   inline float generate(){ 
-    std::uniform_real_distribution<float> dis(-10,10);
+    std::uniform_real_distribution<float> dis(-1,1);
     return dis(gen); 
   }
   
   template <>
   inline std::complex<float> generate(){ 
-    std::uniform_real_distribution<float> dis(-10,10);
+    std::uniform_real_distribution<float> dis(-1,1);
     return std::complex<float>(dis(gen),dis(gen)); 
   }
 }

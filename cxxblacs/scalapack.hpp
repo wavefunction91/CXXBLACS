@@ -67,6 +67,52 @@ namespace CXXBLACS {
 
 
 
+
+
+  template <typename Field>
+  inline void PTRMM(const char SIDE, const char UPLO, const char TRANSA,
+    const char DIAG, const CB_INT M, const CB_INT N, const Field ALPHA,
+    const Field *A, const CB_INT IA, const CB_INT JA, const CB_INT *DESCA,
+    Field *B, const CB_INT IB, const CB_INT JB, const CB_INT *DESCB);
+
+
+  #define PTRMM_IMPL(F,FUNC)\
+  template <>\
+  inline void PTRMM(const char SIDE, const char UPLO, const char TRANSA,\
+    const char DIAG, const CB_INT M, const CB_INT N, const F ALPHA,\
+    const F *A, const CB_INT IA, const CB_INT JA, const CB_INT *DESCA,\
+    F *B, const CB_INT IB, const CB_INT JB, const CB_INT *DESCB) {\
+    FUNC(&SIDE,&UPLO,&TRANSA,&DIAG,&M,&N,&ALPHA,A,&IA,&JA,DESCA,\
+      B,&IB,&JB,DESCB);\
+  }
+
+  PTRMM_IMPL(float               ,pstrmm_);
+  PTRMM_IMPL(double              ,pdtrmm_);
+  PTRMM_IMPL(std::complex<float> ,pctrmm_);
+  PTRMM_IMPL(std::complex<double>,pztrmm_);
+
+  template <typename Field>
+  inline void PTRMM(const char SIDE, const char UPLO, const char TRANSA,
+    const char DIAG, const CB_INT M, const CB_INT N, const Field ALPHA,
+    const Field *A, const CB_INT IA, const CB_INT JA, 
+    const ScaLAPACK_Desc_t DESCA, Field *B, const CB_INT IB, const CB_INT JB, 
+    const ScaLAPACK_Desc_t DESCB) {
+
+    PTRMM(SIDE,UPLO,TRANSA,DIAG,M,N,ALPHA,A,IA,JA,&DESCA[0],B,IB,JB,&DESCB[0]);
+
+  }
+
+
+
+
+
+
+
+
+
+
+
+
   template <typename Field>
   inline void PGEMR2D(const CB_INT M, const CB_INT N, const Field *A,
     const CB_INT IA, const CB_INT JA, const CB_INT *DESCA, Field *B,
@@ -210,6 +256,36 @@ namespace CXXBLACS {
     const ScaLAPACK_Desc_t DESCB) {
 
     return PGESV(N,NRHS,A,IA,JA,&DESCA[0],IPIV,B,IB,JB,&DESCB[0]);
+
+  }
+
+
+  template <typename Field>
+  inline CB_INT PPOTRF(const char UPLO, const CB_INT N, Field *A,
+    const CB_INT IA, const CB_INT JA, const CB_INT *DESCA);
+
+  #define PPOTRF_IMPL(F,FUNC)\
+  template <>\
+  inline CB_INT PPOTRF(const char UPLO, const CB_INT N, F *A,\
+    const CB_INT IA, const CB_INT JA, const CB_INT *DESCA) {\
+    \
+    CB_INT INFO;\
+    FUNC(&UPLO,&N,A,&IA,&JA,DESCA,&INFO);\
+    return INFO;\
+    \
+  }
+
+  PPOTRF_IMPL(float               ,pspotrf_);
+  PPOTRF_IMPL(double              ,pdpotrf_);
+  PPOTRF_IMPL(std::complex<float> ,pcpotrf_);
+  PPOTRF_IMPL(std::complex<double>,pzpotrf_);
+
+
+  template <typename Field>
+  inline CB_INT PPOTRF(const char UPLO, const CB_INT N, Field *A,
+    const CB_INT IA, const CB_INT JA, const ScaLAPACK_Desc_t DESCA) {
+
+    return PPOTRF(UPLO,N,A,IA,JA,&DESCA[0]);
 
   }
 

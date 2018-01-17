@@ -18,7 +18,7 @@
 #
 #
 
-add_executable( scalapack_test ../ut.cxx pgemm.cxx eig.cxx solve.cxx )
+add_executable( scalapack_test ../ut.cxx pgemm.cxx ptrmm.cxx eig.cxx solve.cxx chol.cxx )
 
 target_compile_definitions(scalapack_test PUBLIC 
   BOOST_TEST_MODULE=SCALAPACK)
@@ -32,6 +32,10 @@ add_test( NAME PGEMM_SQP COMMAND ${MPIEXEC} -np 4 "./scalapack_test" "--run_test
 add_test( NAME PGEMM_RTP COMMAND ${MPIEXEC} -np 2 "./scalapack_test" "--run_test=PGEMM" )
 add_test( NAME PGEMM_SER COMMAND ${MPIEXEC} -np 1 "./scalapack_test" "--run_test=PGEMM" )
 
+add_test( NAME PTRMM_SQP COMMAND ${MPIEXEC} -np 4 "./scalapack_test" "--run_test=PTRMM" )
+add_test( NAME PTRMM_RTP COMMAND ${MPIEXEC} -np 2 "./scalapack_test" "--run_test=PTRMM" )
+add_test( NAME PTRMM_SER COMMAND ${MPIEXEC} -np 1 "./scalapack_test" "--run_test=PTRMM" )
+
 add_test( NAME PSYEV_SQP COMMAND ${MPIEXEC} -np 4 "./scalapack_test" "--run_test=PSYEV" )
 add_test( NAME PSYEV_RTP COMMAND ${MPIEXEC} -np 2 "./scalapack_test" "--run_test=PSYEV" )
 add_test( NAME PSYEV_SER COMMAND ${MPIEXEC} -np 1 "./scalapack_test" "--run_test=PSYEV" )
@@ -43,3 +47,7 @@ add_test( NAME PHEEV_SER COMMAND ${MPIEXEC} -np 1 "./scalapack_test" "--run_test
 add_test( NAME PGESV_SQP COMMAND ${MPIEXEC} -np 4 "./scalapack_test" "--run_test=PGESV" )
 add_test( NAME PGESV_RTP COMMAND ${MPIEXEC} -np 2 "./scalapack_test" "--run_test=PGESV" )
 add_test( NAME PGESV_SER COMMAND ${MPIEXEC} -np 1 "./scalapack_test" "--run_test=PGESV" )
+
+add_test( NAME PPOTRF_SQP COMMAND ${MPIEXEC} -np 4 "./scalapack_test" "--run_test=PPOTRF" )
+add_test( NAME PPOTRF_RTP COMMAND ${MPIEXEC} -np 2 "./scalapack_test" "--run_test=PPOTRF" )
+add_test( NAME PPOTRF_SER COMMAND ${MPIEXEC} -np 1 "./scalapack_test" "--run_test=PPOTRF" )
