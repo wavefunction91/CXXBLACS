@@ -106,12 +106,12 @@ namespace CXXBLACS {
       }
 
       // Comm must be global for the time beging
-      if( comm_ != MPI_COMM_WORLD ) {
+    //if( comm_ != MPI_COMM_WORLD ) {
 
-        std::runtime_error err("BlacsGrid + non MPI_COMM_WORLD NYI");
-        throw err;
+    //  std::runtime_error err("BlacsGrid + non MPI_COMM_WORLD NYI");
+    //  throw err;
 
-      }
+    //}
 
       // Get the MPI info and system context
       int IPROC, NPROC; // for 64-bit ints
@@ -122,8 +122,18 @@ namespace CXXBLACS {
       IContxt_ = comm_;
 
       // Make as close to a square grid as possible
-      nProcRow_ = int(std::sqrt(nProc_));
-      nProcCol_ = nProc_ / nProcRow_;
+      if( not ORDER.compare("linear") ) {
+
+        nProcRow_ = 1;
+        nProcCol_ = nProc_;
+        ORDER = "row-major";
+
+      } else {
+
+        nProcRow_ = int(std::sqrt(nProc_));
+        nProcCol_ = nProc_ / nProcRow_;
+
+      }
 
       // Initialize BLACS grid
       BlacsGridInit(IContxt_,ORDER.c_str(),nProcRow_,nProcCol_);
