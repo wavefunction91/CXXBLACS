@@ -16,7 +16,6 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef _CXXBLACS_IGNORE_BLAS_LAPACK
 #ifndef __INCLUDED_CXXBLACS_LAPACK_HPP__
 #define __INCLUDED_CXXBLACS_LAPACK_HPP__
 
@@ -33,7 +32,8 @@ namespace CXXBLACS {
   template <>\
   inline void LACOPY(const char UPLO, const CB_INT M, const CB_INT N,\
     F *A, const CB_INT LDA, F *B, const CB_INT LDB) {\
-    FUNC(&UPLO,&M,&N,ToLapackType(A),&LDA,ToLapackType(B),&LDB);\
+    FUNC(cc(&UPLO),cc(&M),cc(&N),ToLapackType(cc(A)),cc(&LDA),\
+      ToLapackType(cc(B)),cc(&LDB));\
   }
 
   LACOPY_IMPL(float                    ,slacpy_);
@@ -56,8 +56,9 @@ namespace CXXBLACS {
     const CB_INT N, const CB_INT K, const F ALPHA, const F *A,\
     const CB_INT LDA, const F *B, const CB_INT LDB, const F BETA,\
     F *C, const CB_INT LDC) {\
-    FUNC(&TRANSA,&TRANSB,&M,&N,&K,ToBlasType(&ALPHA),ToBlasType(A),&LDA,\
-        ToBlasType(B),&LDB,ToBlasType(&BETA),ToBlasType(C),&LDC);\
+    FUNC(cc(&TRANSA),cc(&TRANSB),cc(&M),cc(&N),cc(&K),ToBlasType(cc(&ALPHA)),\
+        ToBlasType(cc(A)),cc(&LDA),ToBlasType(cc(B)),cc(&LDB),ToBlasType(cc(&BETA)),\
+        ToBlasType(cc(C)),cc(&LDC));\
   };
 
   GEMM_IMPL(float                  ,sgemm_);
@@ -80,8 +81,9 @@ namespace CXXBLACS {
   inline void TRMM(const char SIDE, const char UPLO, const char TRANSA, \
     const char DIAG, const CB_INT M, const CB_INT N, const F ALPHA,\
     const F *A, const CB_INT LDA, F *B, const CB_INT LDB){\
-    FUNC(&SIDE,&UPLO,&TRANSA,&DIAG,&M,&N,ToBlasType(&ALPHA),ToBlasType(A),&LDA,\
-        ToBlasType(B),&LDB);\
+    FUNC(cc(&SIDE),cc(&UPLO),cc(&TRANSA),cc(&DIAG),cc(&M),cc(&N),\
+      ToBlasType(cc(&ALPHA)),ToBlasType(cc(A)),cc(&LDA),ToBlasType(cc(B)),\
+      cc(&LDB));\
   }
 
   TRMM_IMPL(float                  ,strmm_);
@@ -91,5 +93,4 @@ namespace CXXBLACS {
 
 };
 
-#endif
 #endif

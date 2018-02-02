@@ -35,6 +35,9 @@
 #endif
 
 
+template <typename T>
+inline T* cc(const T *x){ return const_cast<T*>(x); };
+
 // BLACS types
 
 #ifndef CXXBLACS_BLACS_Complex16
