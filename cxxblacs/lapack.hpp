@@ -38,8 +38,8 @@ namespace CXXBLACS {
 
   LACOPY_IMPL(float                    ,slacpy_);
   LACOPY_IMPL(double                   ,dlacpy_);
-  LACOPY_IMPL(CXXBLACS_LAPACK_Complex8 ,clacpy_);
-  LACOPY_IMPL(CXXBLACS_LAPACK_Complex16,zlacpy_);
+  LACOPY_IMPL(std::complex<float> ,clacpy_);
+  LACOPY_IMPL(std::complex<double>,zlacpy_);
 
 
 
@@ -63,8 +63,8 @@ namespace CXXBLACS {
 
   GEMM_IMPL(float                  ,sgemm_);
   GEMM_IMPL(double                 ,dgemm_);
-  GEMM_IMPL(CXXBLACS_BLAS_Complex8 ,cgemm_);
-  GEMM_IMPL(CXXBLACS_BLAS_Complex16,zgemm_);
+  GEMM_IMPL(std::complex<float> ,cgemm_);
+  GEMM_IMPL(std::complex<double>,zgemm_);
 
 
 
@@ -88,8 +88,8 @@ namespace CXXBLACS {
 
   TRMM_IMPL(float                  ,strmm_);
   TRMM_IMPL(double                 ,dtrmm_);
-  TRMM_IMPL(CXXBLACS_BLAS_Complex8 ,ctrmm_);
-  TRMM_IMPL(CXXBLACS_BLAS_Complex16,ztrmm_);
+  TRMM_IMPL(std::complex<float> ,ctrmm_);
+  TRMM_IMPL(std::complex<double>,ztrmm_);
 
 };
 

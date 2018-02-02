@@ -48,8 +48,8 @@ namespace CXXBLACS {
 
   PGEMM_IMPL(float                   ,psgemm_);
   PGEMM_IMPL(double                  ,pdgemm_);
-  PGEMM_IMPL(CXXBLACS_PBLAS_Complex8 ,pcgemm_);
-  PGEMM_IMPL(CXXBLACS_PBLAS_Complex16,pzgemm_);
+  PGEMM_IMPL(std::complex<float> ,pcgemm_);
+  PGEMM_IMPL(std::complex<double>,pzgemm_);
 
   template <typename Field>
   inline void PGEMM(const char TRANSA, const char TRANSB, const CB_INT M,
@@ -89,8 +89,8 @@ namespace CXXBLACS {
 
   PTRMM_IMPL(float                   ,pstrmm_);
   PTRMM_IMPL(double                  ,pdtrmm_);
-  PTRMM_IMPL(CXXBLACS_PBLAS_Complex8 ,pctrmm_);
-  PTRMM_IMPL(CXXBLACS_PBLAS_Complex16,pztrmm_);
+  PTRMM_IMPL(std::complex<float> ,pctrmm_);
+  PTRMM_IMPL(std::complex<double>,pztrmm_);
 
   template <typename Field>
   inline void PTRMM(const char SIDE, const char UPLO, const char TRANSA,
@@ -131,8 +131,8 @@ namespace CXXBLACS {
 
   PGEMR2D_IMPL(float                       ,psgemr2d_);
   PGEMR2D_IMPL(double                      ,pdgemr2d_);
-  PGEMR2D_IMPL(CXXBLACS_SCALAPACK_Complex8 ,pcgemr2d_);
-  PGEMR2D_IMPL(CXXBLACS_SCALAPACK_Complex16,pzgemr2d_);
+  PGEMR2D_IMPL(std::complex<float> ,pcgemr2d_);
+  PGEMR2D_IMPL(std::complex<double>,pzgemr2d_);
 
   template <typename Field>
   inline void PGEMR2D(const CB_INT M, const CB_INT N, const Field *A,
@@ -198,8 +198,8 @@ namespace CXXBLACS {
   PSYEV_IMPL(float ,pssyev_);
   PSYEV_IMPL(double,pdsyev_);
 
-  PHEEV_IMPL(CXXBLACS_SCALAPACK_Complex8 ,float ,pcheev_);
-  PHEEV_IMPL(CXXBLACS_SCALAPACK_Complex16,double,pzheev_);
+  PHEEV_IMPL(std::complex<float> ,float ,pcheev_);
+  PHEEV_IMPL(std::complex<double>,double,pzheev_);
 
   template <typename Field>
   inline CB_INT PSYEV(const char JOBZ, const char UPLO, const CB_INT N,
@@ -249,8 +249,8 @@ namespace CXXBLACS {
 
   PGESV_IMPL(float                       ,psgesv_);
   PGESV_IMPL(double                      ,pdgesv_);
-  PGESV_IMPL(CXXBLACS_SCALAPACK_Complex8 ,pcgesv_);
-  PGESV_IMPL(CXXBLACS_SCALAPACK_Complex16,pzgesv_);
+  PGESV_IMPL(std::complex<float> ,pcgesv_);
+  PGESV_IMPL(std::complex<double>,pzgesv_);
 
   template <typename Field>
   inline CB_INT PGESV(const CB_INT N, const CB_INT NRHS, Field *A, 
@@ -280,8 +280,8 @@ namespace CXXBLACS {
 
   PPOTRF_IMPL(float                       ,pspotrf_);
   PPOTRF_IMPL(double                      ,pdpotrf_);
-  PPOTRF_IMPL(CXXBLACS_SCALAPACK_Complex8 ,pcpotrf_);
-  PPOTRF_IMPL(CXXBLACS_SCALAPACK_Complex16,pzpotrf_);
+  PPOTRF_IMPL(std::complex<float> ,pcpotrf_);
+  PPOTRF_IMPL(std::complex<double>,pzpotrf_);
 
 
   template <typename Field>
