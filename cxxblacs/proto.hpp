@@ -120,10 +120,10 @@ extern "C" {
     const F*, const CB_INT*, const CB_INT*, const CB_INT*,\
     const F*, F*, const CB_INT*, const CB_INT*, const CB_INT*);
 
-  pgemm(float               ,psgemm_);
-  pgemm(double              ,pdgemm_);
-  pgemm(std::complex<float> ,pcgemm_);
-  pgemm(std::complex<double>,pzgemm_);
+  pgemm(float                   ,psgemm_);
+  pgemm(double                  ,pdgemm_);
+  pgemm(CXXBLACS_PBLAS_Complex8 ,pcgemm_);
+  pgemm(CXXBLACS_PBLAS_Complex16,pzgemm_);
 
 
 
@@ -133,10 +133,10 @@ extern "C" {
     const CB_INT*, const CB_INT*, F*, const CB_INT*, const CB_INT*,\
     const CB_INT*);
 
-  ptrmm(float               ,pstrmm_);
-  ptrmm(double              ,pdtrmm_);
-  ptrmm(std::complex<float> ,pctrmm_);
-  ptrmm(std::complex<double>,pztrmm_);
+  ptrmm(float                   ,pstrmm_);
+  ptrmm(double                  ,pdtrmm_);
+  ptrmm(CXXBLACS_PBLAS_Complex8 ,pctrmm_);
+  ptrmm(CXXBLACS_PBLAS_Complex16,pztrmm_);
 
 }
 
@@ -161,10 +161,10 @@ extern "C" {
     F*, const CB_INT*, const CB_INT*, const CB_INT*,\
     const CB_INT*);
 
-  pgemr2d(float               ,psgemr2d_);
-  pgemr2d(double              ,pdgemr2d_);
-  pgemr2d(std::complex<float> ,pcgemr2d_);
-  pgemr2d(std::complex<double>,pzgemr2d_);
+  pgemr2d(float                       ,psgemr2d_);
+  pgemr2d(double                      ,pdgemr2d_);
+  pgemr2d(CXXBLACS_SCALAPACK_Complex8 ,pcgemr2d_);
+  pgemr2d(CXXBLACS_SCALAPACK_Complex16,pzgemr2d_);
 
 
   #define psyev(F,FUNC)\
@@ -180,8 +180,8 @@ extern "C" {
   psyev(float ,pssyev_);
   psyev(double,pdsyev_);
 
-  pheev(std::complex<float> ,float ,pcheev_);
-  pheev(std::complex<double>,double,pzheev_);
+  pheev(CXXBLACS_SCALAPACK_Complex8 ,float ,pcheev_);
+  pheev(CXXBLACS_SCALAPACK_Complex16,double,pzheev_);
 
 
 
@@ -191,10 +191,10 @@ extern "C" {
     const CB_INT*, CB_INT*, F*, const CB_INT*, const CB_INT*,\
     const CB_INT*, CB_INT*);
 
-  pgesv(float               ,psgesv_);
-  pgesv(double              ,pdgesv_);
-  pgesv(std::complex<float> ,pcgesv_);
-  pgesv(std::complex<double>,pzgesv_);
+  pgesv(float                       ,psgesv_);
+  pgesv(double                      ,pdgesv_);
+  pgesv(CXXBLACS_SCALAPACK_Complex8 ,pcgesv_);
+  pgesv(CXXBLACS_SCALAPACK_Complex16,pzgesv_);
 
 
 
@@ -203,10 +203,10 @@ extern "C" {
   void FUNC(const char*, const CB_INT*, F*, const CB_INT*, const CB_INT*,\
     const CB_INT*, CB_INT*);
 
-  ppotrf(float               ,pspotrf_);
-  ppotrf(double              ,pdpotrf_);
-  ppotrf(std::complex<float> ,pcpotrf_);
-  ppotrf(std::complex<double>,pzpotrf_);
+  ppotrf(float                       ,pspotrf_);
+  ppotrf(double                      ,pdpotrf_);
+  ppotrf(CXXBLACS_SCALAPACK_Complex8 ,pcpotrf_);
+  ppotrf(CXXBLACS_SCALAPACK_Complex16,pzpotrf_);
 
 
 
@@ -228,10 +228,10 @@ extern "C" {
   void FUNC(const char*, const CB_INT*, const CB_INT*, F *, const CB_INT *,\
     F *, const CB_INT*);
 
-  lacpy(float               ,slacpy_);
-  lacpy(double              ,dlacpy_);
-  lacpy(std::complex<float> ,clacpy_);
-  lacpy(std::complex<double>,zlacpy_);
+  lacpy(float                    ,slacpy_);
+  lacpy(double                   ,dlacpy_);
+  lacpy(CXXBLACS_LAPACK_Complex8 ,clacpy_);
+  lacpy(CXXBLACS_LAPACK_Complex16,zlacpy_);
 
 }
 
@@ -247,20 +247,20 @@ extern "C" {
     const CB_INT*, const F*, const F*, const CB_INT*, const F*,\
     const CB_INT*,const F*, F*, const CB_INT*);
 
-  gemm(float               ,sgemm_);
-  gemm(double              ,dgemm_);
-  gemm(std::complex<float> ,cgemm_);
-  gemm(std::complex<double>,zgemm_);
+  gemm(float                  ,sgemm_);
+  gemm(double                 ,dgemm_);
+  gemm(CXXBLACS_BLAS_Complex8 ,cgemm_);
+  gemm(CXXBLACS_BLAS_Complex16,zgemm_);
 
   #define trmm(F,FUNC)\
   void FUNC(const char*, const char*, const char*, const char*,\
     const CB_INT*, const CB_INT*, const F*, const F*, const CB_INT*,\
     F*, const CB_INT*);
       
-  trmm(float               ,strmm_);
-  trmm(double              ,dtrmm_);
-  trmm(std::complex<float> ,ctrmm_);
-  trmm(std::complex<double>,ztrmm_);
+  trmm(float                  ,strmm_);
+  trmm(double                 ,dtrmm_);
+  trmm(CXXBLACS_BLAS_Complex8 ,ctrmm_);
+  trmm(CXXBLACS_BLAS_Complex16,ztrmm_);
 
 }
 

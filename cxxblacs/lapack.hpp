@@ -32,13 +32,13 @@ namespace CXXBLACS {
   template <>\
   inline void LACOPY(const char UPLO, const CB_INT M, const CB_INT N,\
     F *A, const CB_INT LDA, F *B, const CB_INT LDB) {\
-    FUNC(&UPLO,&M,&N,A,&LDA,B,&LDB);\
+    FUNC(&UPLO,&M,&N,ToLapackType(A),&LDA,ToLapackType(B),&LDB);\
   }
 
-  LACOPY_IMPL(float               ,slacpy_);
-  LACOPY_IMPL(double              ,dlacpy_);
-  LACOPY_IMPL(std::complex<float> ,clacpy_);
-  LACOPY_IMPL(std::complex<double>,zlacpy_);
+  LACOPY_IMPL(float                    ,slacpy_);
+  LACOPY_IMPL(double                   ,dlacpy_);
+  LACOPY_IMPL(CXXBLACS_LAPACK_Complex8 ,clacpy_);
+  LACOPY_IMPL(CXXBLACS_LAPACK_Complex16,zlacpy_);
 
 
 
@@ -55,13 +55,14 @@ namespace CXXBLACS {
     const CB_INT N, const CB_INT K, const F ALPHA, const F *A,\
     const CB_INT LDA, const F *B, const CB_INT LDB, const F BETA,\
     F *C, const CB_INT LDC) {\
-    FUNC(&TRANSA,&TRANSB,&M,&N,&K,&ALPHA,A,&LDA,B,&LDB,&BETA,C,&LDC);\
+    FUNC(&TRANSA,&TRANSB,&M,&N,&K,ToBlasType(&ALPHA),ToBlasType(A),&LDA,\
+        ToBlasType(B),&LDB,ToBlasType(&BETA),ToBlasType(C),&LDC);\
   };
 
-  GEMM_IMPL(float               ,sgemm_);
-  GEMM_IMPL(double              ,dgemm_);
-  GEMM_IMPL(std::complex<float> ,cgemm_);
-  GEMM_IMPL(std::complex<double>,zgemm_);
+  GEMM_IMPL(float                  ,sgemm_);
+  GEMM_IMPL(double                 ,dgemm_);
+  GEMM_IMPL(CXXBLACS_BLAS_Complex8 ,cgemm_);
+  GEMM_IMPL(CXXBLACS_BLAS_Complex16,zgemm_);
 
 
 
@@ -78,13 +79,14 @@ namespace CXXBLACS {
   void TRMM(const char SIDE, const char UPLO, const char TRANSA, \
     const char DIAG, const CB_INT M, const CB_INT N, const F ALPHA,\
     const F *A, const CB_INT LDA, F *B, const CB_INT LDB){\
-    FUNC(&SIDE,&UPLO,&TRANSA,&DIAG,&M,&N,&ALPHA,A,&LDA,B,&LDB);\
+    FUNC(&SIDE,&UPLO,&TRANSA,&DIAG,&M,&N,ToBlasType(&ALPHA),ToBlasType(A),&LDA,\
+        ToBlasType(B),&LDB);\
   }
 
-  TRMM_IMPL(float               ,strmm_);
-  TRMM_IMPL(double              ,dtrmm_);
-  TRMM_IMPL(std::complex<float> ,ctrmm_);
-  TRMM_IMPL(std::complex<double>,ztrmm_);
+  TRMM_IMPL(float                  ,strmm_);
+  TRMM_IMPL(double                 ,dtrmm_);
+  TRMM_IMPL(CXXBLACS_BLAS_Complex8 ,ctrmm_);
+  TRMM_IMPL(CXXBLACS_BLAS_Complex16,ztrmm_);
 
 };
 

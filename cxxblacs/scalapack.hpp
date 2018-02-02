@@ -41,14 +41,15 @@ namespace CXXBLACS {
     const CB_INT* DESCB, const F BETA, F* C,\
     const CB_INT IC, const CB_INT JC, const CB_INT* DESCC){\
     \
-    FUNC(&TRANSA,&TRANSB,&M,&N,&K,&ALPHA,A,&IA,&JA,DESCA,B,&IB,&JB,\
-      DESCB,&BETA,C,&IC,&JC,DESCC);\
+    FUNC(&TRANSA,&TRANSB,&M,&N,&K,ToPblasType(&ALPHA),ToPblasType(A),&IA,&JA,\
+      DESCA,ToPblasType(B),&IB,&JB,DESCB,ToPblasType(&BETA),ToPblasType(C),\
+      &IC,&JC,DESCC);\
   }
 
-  PGEMM_IMPL(float               ,psgemm_);
-  PGEMM_IMPL(double              ,pdgemm_);
-  PGEMM_IMPL(std::complex<float> ,pcgemm_);
-  PGEMM_IMPL(std::complex<double>,pzgemm_);
+  PGEMM_IMPL(float                   ,psgemm_);
+  PGEMM_IMPL(double                  ,pdgemm_);
+  PGEMM_IMPL(CXXBLACS_PBLAS_Complex8 ,pcgemm_);
+  PGEMM_IMPL(CXXBLACS_PBLAS_Complex16,pzgemm_);
 
   template <typename Field>
   inline void PGEMM(const char TRANSA, const char TRANSB, const CB_INT M,
@@ -82,14 +83,14 @@ namespace CXXBLACS {
     const char DIAG, const CB_INT M, const CB_INT N, const F ALPHA,\
     const F *A, const CB_INT IA, const CB_INT JA, const CB_INT *DESCA,\
     F *B, const CB_INT IB, const CB_INT JB, const CB_INT *DESCB) {\
-    FUNC(&SIDE,&UPLO,&TRANSA,&DIAG,&M,&N,&ALPHA,A,&IA,&JA,DESCA,\
-      B,&IB,&JB,DESCB);\
+    FUNC(&SIDE,&UPLO,&TRANSA,&DIAG,&M,&N,ToPblasType(&ALPHA),ToPblasType(A),\
+      &IA,&JA,DESCA,ToPblasType(B),&IB,&JB,DESCB);\
   }
 
-  PTRMM_IMPL(float               ,pstrmm_);
-  PTRMM_IMPL(double              ,pdtrmm_);
-  PTRMM_IMPL(std::complex<float> ,pctrmm_);
-  PTRMM_IMPL(std::complex<double>,pztrmm_);
+  PTRMM_IMPL(float                   ,pstrmm_);
+  PTRMM_IMPL(double                  ,pdtrmm_);
+  PTRMM_IMPL(CXXBLACS_PBLAS_Complex8 ,pctrmm_);
+  PTRMM_IMPL(CXXBLACS_PBLAS_Complex16,pztrmm_);
 
   template <typename Field>
   inline void PTRMM(const char SIDE, const char UPLO, const char TRANSA,
@@ -124,13 +125,14 @@ namespace CXXBLACS {
     const CB_INT IA, const CB_INT JA, const CB_INT *DESCA, F *B,\
     const CB_INT IB, const CB_INT JB, const CB_INT *DESCB, const CB_INT ICTXT){\
     \
-    FUNC(&M,&N,A,&IA,&JA,DESCA,B,&IB,&JB,DESCB,&ICTXT);\
+    FUNC(&M,&N,ToScalapackType(A),&IA,&JA,DESCA,ToScalapackType(B),&IB,&JB,\
+      DESCB,&ICTXT);\
   }
 
-  PGEMR2D_IMPL(float               ,psgemr2d_);
-  PGEMR2D_IMPL(double              ,pdgemr2d_);
-  PGEMR2D_IMPL(std::complex<float> ,pcgemr2d_);
-  PGEMR2D_IMPL(std::complex<double>,pzgemr2d_);
+  PGEMR2D_IMPL(float                       ,psgemr2d_);
+  PGEMR2D_IMPL(double                      ,pdgemr2d_);
+  PGEMR2D_IMPL(CXXBLACS_SCALAPACK_Complex8 ,pcgemr2d_);
+  PGEMR2D_IMPL(CXXBLACS_SCALAPACK_Complex16,pzgemr2d_);
 
   template <typename Field>
   inline void PGEMR2D(const CB_INT M, const CB_INT N, const Field *A,
@@ -187,8 +189,8 @@ namespace CXXBLACS {
       throw err;\
     }\
     CB_INT INFO;\
-    FUNC(&JOBZ,&UPLO,&N,A,&IA,&JA,DESCA,W,Z,&IZ,&JZ,DESCZ,WORK,&LWORK,\
-      RWORK,&LRWORK,&INFO);\
+    FUNC(&JOBZ,&UPLO,&N,ToScalapackType(A),&IA,&JA,DESCA,W,ToScalapackType(Z),\
+      &IZ,&JZ,DESCZ,ToScalapackType(WORK),&LWORK,RWORK,&LRWORK,&INFO);\
     return INFO;\
     \
   }
@@ -196,8 +198,8 @@ namespace CXXBLACS {
   PSYEV_IMPL(float ,pssyev_);
   PSYEV_IMPL(double,pdsyev_);
 
-  PHEEV_IMPL(std::complex<float> ,float ,pcheev_);
-  PHEEV_IMPL(std::complex<double>,double,pzheev_);
+  PHEEV_IMPL(CXXBLACS_SCALAPACK_Complex8 ,float ,pcheev_);
+  PHEEV_IMPL(CXXBLACS_SCALAPACK_Complex16,double,pzheev_);
 
   template <typename Field>
   inline CB_INT PSYEV(const char JOBZ, const char UPLO, const CB_INT N,
@@ -239,15 +241,16 @@ namespace CXXBLACS {
     const CB_INT *DESCB) {\
     \
     CB_INT INFO;\
-    FUNC(&N,&NRHS,A,&IA,&JA,DESCA,IPIV,B,&IB,&JB,DESCB,&INFO);\
+    FUNC(&N,&NRHS,ToScalapackType(A),&IA,&JA,DESCA,IPIV,ToScalapackType(B),\
+      &IB,&JB,DESCB,&INFO);\
     return INFO;\
     \
   }
 
-  PGESV_IMPL(float               ,psgesv_);
-  PGESV_IMPL(double              ,pdgesv_);
-  PGESV_IMPL(std::complex<float> ,pcgesv_);
-  PGESV_IMPL(std::complex<double>,pzgesv_);
+  PGESV_IMPL(float                       ,psgesv_);
+  PGESV_IMPL(double                      ,pdgesv_);
+  PGESV_IMPL(CXXBLACS_SCALAPACK_Complex8 ,pcgesv_);
+  PGESV_IMPL(CXXBLACS_SCALAPACK_Complex16,pzgesv_);
 
   template <typename Field>
   inline CB_INT PGESV(const CB_INT N, const CB_INT NRHS, Field *A, 
@@ -270,15 +273,15 @@ namespace CXXBLACS {
     const CB_INT IA, const CB_INT JA, const CB_INT *DESCA) {\
     \
     CB_INT INFO;\
-    FUNC(&UPLO,&N,A,&IA,&JA,DESCA,&INFO);\
+    FUNC(&UPLO,&N,ToScalapackType(A),&IA,&JA,DESCA,&INFO);\
     return INFO;\
     \
   }
 
-  PPOTRF_IMPL(float               ,pspotrf_);
-  PPOTRF_IMPL(double              ,pdpotrf_);
-  PPOTRF_IMPL(std::complex<float> ,pcpotrf_);
-  PPOTRF_IMPL(std::complex<double>,pzpotrf_);
+  PPOTRF_IMPL(float                       ,pspotrf_);
+  PPOTRF_IMPL(double                      ,pdpotrf_);
+  PPOTRF_IMPL(CXXBLACS_SCALAPACK_Complex8 ,pcpotrf_);
+  PPOTRF_IMPL(CXXBLACS_SCALAPACK_Complex16,pzpotrf_);
 
 
   template <typename Field>
