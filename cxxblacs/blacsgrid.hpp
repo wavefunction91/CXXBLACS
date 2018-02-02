@@ -186,7 +186,7 @@ namespace CXXBLACS {
       CB_INT NLocR, NLocC;
       std::tie(NLocR,NLocC) = getLocalDims(M,N);
       
-      RingExecute(comm_,[&](){ op(ALoc,NLocR,NLocC,LDLOCA)} );
+      RingExecute(comm_,[&](){ op(ALoc,NLocR,NLocC,LDLOCA); } );
 
     }
 
