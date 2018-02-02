@@ -16,6 +16,7 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+#ifndef _CXXBLACS_IGNORE_BLAS_LAPACK
 #ifndef __INCLUDED_CXXBLACS_LAPACK_HPP__
 #define __INCLUDED_CXXBLACS_LAPACK_HPP__
 
@@ -90,4 +91,5 @@ namespace CXXBLACS {
 
 };
 
+#endif
 #endif
