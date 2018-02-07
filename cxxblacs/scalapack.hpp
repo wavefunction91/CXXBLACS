@@ -37,8 +37,8 @@ namespace CXXBLACS {
     const CB_INT *DESCA){\
     \
     CB_INT INFO;\
-    FUNC(&TYPE,ToScalapackType(&CTO),ToScalapackType(&CFROM),&M,&N,\
-      ToScalapackType(A),&IA,&JA,DESCA,&INFO);\
+    FUNC(&TYPE,ToScalapackType(cc(&CTO)),ToScalapackType(cc(&CFROM)),&M,&N,\
+      ToScalapackType(cc(A)),&IA,&JA,DESCA,&INFO);\
     return INFO;\
     \
   }
