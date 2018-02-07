@@ -133,7 +133,12 @@ namespace CXXBLACS {
         nProcRow_ = int(std::sqrt(nProc_));
         nProcCol_ = nProc_ / nProcRow_;
 
-        nProcCol_ += nProc_ - nProcRow_*nProcCol_;
+        while( nProcRow_ * nProcCol_ != nProc_ ) {                                  
+          
+          nProcRow_--;
+          nProcCol_ = nProc_ / nProcRow_;                                           
+        
+        }
 
       }
 
