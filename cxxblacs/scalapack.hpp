@@ -25,14 +25,14 @@
 namespace CXXBLACS {
 
 
-  template <typename Field>
-  inline CB_INT PLASCL(const char TYPE, const Field CTO, const Field CFROM,
+  template <typename Field, typename RF>
+  inline CB_INT PLASCL(const char TYPE, const RF CTO, const RF CFROM,
     const CB_INT M, const CB_INT N, Field* A, const CB_INT IA, const CB_INT JA,
     const CB_INT *DESCA);
 
-  #define PLASCL_IMPL(F,FUNC)\
+  #define PLASCL_IMPL(F,RF,FUNC)\
   template <>\
-  inline CB_INT PLASCL(const char TYPE, const F CTO, const F CFROM,\
+  inline CB_INT PLASCL(const char TYPE, const RF CTO, const RF CFROM,\
     const CB_INT M, const CB_INT N, F* A, const CB_INT IA, const CB_INT JA,\
     const CB_INT *DESCA){\
     \
@@ -43,13 +43,13 @@ namespace CXXBLACS {
     \
   }
 
-  PLASCL_IMPL(float               ,pslascl_);
-  PLASCL_IMPL(double              ,pdlascl_);
-  PLASCL_IMPL(std::complex<float> ,pclascl_);
-  PLASCL_IMPL(std::complex<double>,pzlascl_);
+  PLASCL_IMPL(float               ,float ,pslascl_);
+  PLASCL_IMPL(double              ,double,pdlascl_);
+  PLASCL_IMPL(std::complex<float> ,float ,pclascl_);
+  PLASCL_IMPL(std::complex<double>,double,pzlascl_);
 
-  template <typename Field>
-  inline CB_INT PLASCL(const char TYPE, const Field CTO, const Field CFROM,
+  template <typename Field, typename RF>
+  inline CB_INT PLASCL(const char TYPE, const RF CTO, const RF CFROM,
     const CB_INT M, const CB_INT N, Field* A, const CB_INT IA, const CB_INT JA,
     const ScaLAPACK_Desc_t DESCA) {
 
