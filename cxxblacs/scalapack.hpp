@@ -37,7 +37,8 @@ namespace CXXBLACS {
     const CB_INT *DESCA){\
     \
     CB_INT INFO;\
-    FUNC(&TYPE,&CTO,&CFROM,&M,&N,A,&IA,&JA,DESCA,&INFO);\
+    FUNC(&TYPE,ToScalapackType(&CTO),ToScalapackType(&CFROM),&M,&N,\
+      ToScalapackType(A),&IA,&JA,DESCA,&INFO);\
     return INFO;\
     \
   }
@@ -47,6 +48,14 @@ namespace CXXBLACS {
   PLASCL_IMPL(std::complex<float> ,pclascl_);
   PLASCL_IMPL(std::complex<double>,pzlascl_);
 
+  template <typename Field>
+  inline CB_INT PLASCL(const char TYPE, const Field CTO, const Field CFROM,
+    const CB_INT M, const CB_INT N, Field* A, const CB_INT IA, const CB_INT JA,
+    const ScaLAPACK_Desc_t DESCA) {
+
+    return PLASCL(TYPE,CTO,CFROM,M,N,A,IA,JA,&DESCA[0]);
+
+  }
 
 
 
