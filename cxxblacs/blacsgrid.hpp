@@ -133,6 +133,8 @@ namespace CXXBLACS {
         nProcRow_ = int(std::sqrt(nProc_));
         nProcCol_ = nProc_ / nProcRow_;
 
+        nProcCol_ += nProc_ - nProcRow_*nProcCol_;
+
       }
 
       // Initialize BLACS grid
