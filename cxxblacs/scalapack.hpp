@@ -24,6 +24,32 @@
 
 namespace CXXBLACS {
 
+
+  template <typename Field>
+  inline CB_INT PLASCL(const char TYPE, const Field CTO, const Field CFROM,
+    const CB_INT M, const CB_INT N, Field* A, const CB_INT IA, const CB_INT JA,
+    const CB_INT *DESCA);
+
+  #define PLASCL_IMPL(F,FUNC)\
+  template <>\
+  inline CB_INT PLASCL(const char TYPE, const F CTO, const F CFROM,\
+    const CB_INT M, const CB_INT N, F* A, const CB_INT IA, const CB_INT JA,\
+    const CB_INT *DESCA){\
+    \
+    CB_INT INFO;\
+    FUNC(&TYPE,&CTO,&CFROM,&M,&N,A,&IA,&JA,DESCA,&INFO);\
+    return INFO;\
+    \
+  }
+
+  PLASCL_IMPL(float               ,pslascl_);
+  PLASCL_IMPL(double              ,pdlascl_);
+  PLASCL_IMPL(std::complex<float> ,pclascl_);
+  PLASCL_IMPL(std::complex<double>,pzlascl_);
+
+
+
+
   template <typename Field>
   inline void PGEMM(const char TRANSA, const char TRANSB, const CB_INT M,
     const CB_INT N, const CB_INT K, const Field ALPHA, const Field* A,

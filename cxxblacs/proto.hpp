@@ -166,6 +166,14 @@ extern "C" {
   pgemr2d(CXXBLACS_SCALAPACK_Complex8 ,pcgemr2d_);
   pgemr2d(CXXBLACS_SCALAPACK_Complex16,pzgemr2d_);
 
+  #define plascl(F,FUNC)\
+  void FUNC(const char*, const F*, const F*, const CB_INT*, const CB_INT*,\
+    F*, const CB_INT*, const CB_INT*, const CB_INT*, CB_INT*);
+
+  plascl(float                       ,pslascl_);
+  plascl(double                      ,pdlascl_);
+  plascl(CXXBLACS_SCALAPACK_Complex8 ,pclascl_);
+  plascl(CXXBLACS_SCALAPACK_Complex16,pzlascl_);
 
   #define psyev(F,FUNC)\
   void FUNC(const char*, const char*, const CB_INT*, F*, const CB_INT*, \
