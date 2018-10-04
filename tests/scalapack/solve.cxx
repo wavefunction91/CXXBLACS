@@ -19,6 +19,12 @@
 
 #include "scalapack_ut.hpp"
 
+template <typename T> T SmartConj(const T);
+template<> inline double SmartConj(const double x){ return x; }
+template<> inline std::complex<double> SmartConj( const std::complex<double>  x ){ return std::conj(x); }
+
+
+
 BOOST_AUTO_TEST_SUITE(PGESV)
 
 template <typename T, typename U>
@@ -65,7 +71,7 @@ void pgesv_test(const CB_INT N, const CB_INT NRHS,
     for(auto j = 0; j <= i; j++) {
 
       A[i + j*N] = generate<Field>();
-      A[j + i*N] = std::conj(A[i + j*N]);
+      A[j + i*N] = SmartConj(A[i + j*N]);
       if( i == j ) A[i + j*N] = std::real(A[i + j*N]);
 
     }

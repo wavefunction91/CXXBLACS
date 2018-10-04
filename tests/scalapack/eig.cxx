@@ -217,7 +217,7 @@ void pheev_test( CB_INT N ) {
     BOOST_CHECK_MESSAGE( maxDiff < 1e-10, 
       "MAX DIFF " << maxDiff
       << " " << std::numeric_limits<Field>::epsilon() 
-      << " " << std::numeric_limits<Field>::epsilon() * N*N*N 
+      << " " << std::numeric_limits<Field>::epsilon() * Field(N*N*N)
     );
 
   });

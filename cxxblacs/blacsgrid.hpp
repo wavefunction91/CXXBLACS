@@ -24,6 +24,7 @@
 #include <cxxblacs/misc.hpp>
 #include <cxxblacs/mpi.hpp>
 #include <cxxblacs/lapack.hpp>
+#include <cxxblacs/scalapack.hpp>
 
 namespace CXXBLACS {
 
@@ -76,6 +77,9 @@ namespace CXXBLACS {
     CB_INT mb_;           ///< Row block size (default = 2)
     CB_INT nb_;           ///< Column block size (default = 2)
 
+    CB_INT iSrc_;         ///< Source Row
+    CB_INT jSrc_;         ///< Source Col
+
   public:
 
 
@@ -94,8 +98,9 @@ namespace CXXBLACS {
      *
      */
     BlacsGrid(MPI_Comm c, CB_INT mb = 2, CB_INT nb = 2,
-      std::string ORDER = "row-major") : 
-      comm_(c), mb_(mb), nb_(nb) {
+      std::string ORDER = "row-major", CB_INT iSrc = 0,
+      CB_INT jSrc = 0) : 
+      comm_(c), mb_(mb), nb_(nb), iSrc_(iSrc), jSrc_(jSrc) {
 
       // Check if MPI has been initialized
       int flag;
@@ -104,14 +109,6 @@ namespace CXXBLACS {
         std::runtime_error err("MPI Environment Not Initialized!");
         throw err;
       }
-
-      // Comm must be global for the time beging
-    //if( comm_ != MPI_COMM_WORLD ) {
-
-    //  std::runtime_error err("BlacsGrid + non MPI_COMM_WORLD NYI");
-    //  throw err;
-
-    //}
 
       // Get the MPI info and system context
       int IPROC, NPROC; // for 64-bit ints
@@ -226,7 +223,7 @@ namespace CXXBLACS {
       
     inline INDX getLocalDims(const CB_INT M, const CB_INT N) const {
 
-      return GetLocalDims(M,N,mb_,nb_,iProcRow_,iProcCol_,0,0,
+      return GetLocalDims(M,N,mb_,nb_,iProcRow_,iProcCol_,iSrc_,jSrc_,
           nProcRow_,nProcCol_);
              
 
@@ -299,7 +296,6 @@ namespace CXXBLACS {
       const CB_INT LDA, Field *ALoc, const CB_INT LDLOCA, 
       const CB_INT iSource, const CB_INT jSource ) {
 
-
       // If there's only one process, just copy the buffer
       if( nProcRow_ == 1 and nProcCol_ == 1 ) {
 
@@ -308,77 +304,25 @@ namespace CXXBLACS {
 
       }
 
-      // Get local dimensions for current process
-      CB_INT NLocR, NLocC;
-      std::tie(NLocR,NLocC) = getLocalDims(M,N);
+      // Create a new BLACS grid which conains matrix
+      // on source process
+      BlacsGrid new_grid( comm_, M, N, "row-major", 
+                          iSource, jSource );
+
+      
+      // Get Descriptors of A on both grids
+      auto DescA = 
+        new_grid.descInit( M, N, iSource, jSource, LDA );
+      auto DescALoc = 
+        this->descInit( M, N, iSrc_, jSrc_, LDLOCA );
 
 
-      // Source process block
-      if( iProcRow_ == iSource and iProcCol_ == jSource ) {
-
-        CB_INT I,J; // Global indicies
-
-        for(CB_INT iPc = 0; iPc < nProcCol_; iPc++)
-        for(CB_INT iPr = 0; iPr < nProcRow_; iPr++) {
-
-          if( iPr == iSource and iPc == jSource ) continue;
-
-          // Get local leading dimension
-          CB_INT ldLocA;
-          Recv(1,1,&ldLocA,1,iPr,iPc);
-
-          // Get local variables for BLACS coordinate (iPr,iPc)
-          CB_INT nLocR, nLocC;
-          std::tie(nLocR,nLocC) = 
-            GetLocalDims(M,N,mb_,nb_,iPr,iPc,0,0,nProcRow_,nProcCol_);
-          
-
-          // Check (non-robustly) if the local buffer is large enough
-          // to fit the sub block of the matrix
-          if( ldLocA > LDLOCA ) {
-
-            std::stringstream ss;
-            ss << "Local buffer does not seem to be large enough "
-               << "to fit sub matrix in Scatter (" << iPr << ", " << iPc
-               << " )";
-            std::runtime_error err(ss.str());
-              
-            throw err;
-
-          }
-
-          // Copy local parts of the matrix to ALoc (temp buffer)
-          for(CB_INT iLocC = 0; iLocC < nLocC; iLocC++)
-          for(CB_INT iLocR = 0; iLocR < nLocR; iLocR++) {
-
-            GlobalFromLocal(IContxt_,mb_,nb_,nProcRow_,nProcCol_,I,J,
-              iPr,iPc,iLocR,iLocC);
-
-            ALoc[iLocR + iLocC*ldLocA] = A[I + J*LDA];
-
-          }
-
-          // Send buffer to (iPr, iPc)
-          Send(nLocR,nLocC,ALoc,ldLocA,iPr,iPc);
-
-        } // Loop over other processes
-
-        // Handle the local buffer
-        for(CB_INT iLocC = 0; iLocC < NLocC; iLocC++)
-        for(CB_INT iLocR = 0; iLocR < NLocR; iLocR++) {
-          std::tie(I,J) = globalFromLocal(iLocR,iLocC);
-          ALoc[iLocR + iLocC*LDLOCA] = A[I + J*LDA];
-        }
-
-      } else { // end Source process block
-
-        // Non source process code
-        Send(1,1,&LDLOCA,1,iSource,jSource); // Send LDLOCA to source
-        Recv(NLocR,NLocC,ALoc,LDLOCA,iSource,jSource); // Recv buffer
-
-      }
-
-
+      // Redistribute
+      PGEMR2D( M, N, 
+               A,    1, 1, DescA, 
+               ALoc, 1, 1, DescALoc,
+               this->iContxt() );
+               
     } // Scatter
 
 
@@ -398,80 +342,23 @@ namespace CXXBLACS {
 
       }
 
-      // Get local dimensions for current process
-      CB_INT NLocR, NLocC;
-      std::tie(NLocR,NLocC) = getLocalDims(M,N);
+      // Create a new BLACS grid which conains matrix
+      // on dest process
+      BlacsGrid new_grid( comm_, M, N, "row-major", 
+                          iDest, jDest );
 
 
-      // Dest process block
-      if( iProcRow_ == iDest and iProcCol_ == jDest ) {
+      // Get Descriptors of A on both grids
+      auto DescA = 
+        new_grid.descInit( M, N, iDest, jDest, LDA );
+      auto DescALoc = 
+        this->descInit( M, N, iSrc_, jSrc_, LDLOCA );
 
-        CB_INT I,J; // Global indicies
-
-
-        // Handle the local buffer
-        for(CB_INT iLocC = 0; iLocC < NLocC; iLocC++)
-        for(CB_INT iLocR = 0; iLocR < NLocR; iLocR++) {
-          std::tie(I,J) = globalFromLocal(iLocR,iLocC);
-          A[I + J*LDA] = ALoc[iLocR + iLocC*LDLOCA];
-        }
-
-
-
-
-        // Loop over other processes
-        for(CB_INT iPc = 0; iPc < nProcCol_; iPc++)
-        for(CB_INT iPr = 0; iPr < nProcRow_; iPr++) {
-
-          if( iPr == iDest and iPc == jDest ) continue;
-
-          // Get local leading dimension
-          CB_INT ldLocA;
-          Recv(1,1,&ldLocA,1,iPr,iPc);
-
-          // Get local variables for BLACS coordinate (iPr,iPc)
-          CB_INT nLocR, nLocC;
-          std::tie(nLocR,nLocC) = 
-            GetLocalDims(M,N,mb_,nb_,iPr,iPc,0,0,nProcRow_,nProcCol_);
-          
-
-          // Check (non-robustly) if the local buffer is large enough
-          // to fit the sub block of the matrix
-          if( ldLocA > LDLOCA ) {
-
-            std::stringstream ss;
-            ss << "Local buffer does not seem to be large enough "
-               << "to fit sub matrix in Gather (" << iPr << ", " << iPc
-               << " )";
-            std::runtime_error err(ss.str());
-              
-            throw err;
-
-          }
-
-
-          // Recv buffer from (iPr, iPc)
-          Recv(nLocR,nLocC,ALoc,ldLocA,iPr,iPc);
-
-          // Copy local parts of the matrix to ALoc (temp buffer)
-          for(CB_INT iLocC = 0; iLocC < nLocC; iLocC++)
-          for(CB_INT iLocR = 0; iLocR < nLocR; iLocR++) {
-
-            GlobalFromLocal(IContxt_,mb_,nb_,nProcRow_,nProcCol_,I,J,
-              iPr,iPc,iLocR,iLocC);
-
-            A[I + J*LDA] = ALoc[iLocR + iLocC*ldLocA];
-
-          }
-        }
-
-      } else { // end Dest process block
-
-        // Non Dest process code
-        Send(1,1,&LDLOCA,1,iDest,jDest); // Send LDLOCA to Dest
-        Send(NLocR,NLocC,ALoc,LDLOCA,iDest,jDest); // Send buffer
-
-      }
+      // Redistribute
+      PGEMR2D( M, N, 
+               ALoc, 1, 1, DescALoc,
+               A,    1, 1, DescA, 
+               this->iContxt() );
 
 
     } // Gather
