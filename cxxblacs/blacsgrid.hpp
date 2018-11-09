@@ -148,7 +148,7 @@ namespace CXXBLACS {
     };
 
 
-    //~BlacsGrid(){ BlacsGridExit(IContxt_); }
+    ~BlacsGrid(){ BlacsGridExit(IContxt_); }
 
 
 
