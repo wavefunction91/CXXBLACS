@@ -19,7 +19,6 @@
 
 #include "scalapack_ut.hpp"
 
-BOOST_AUTO_TEST_SUITE(PGEMM)
 
 
 
@@ -112,15 +111,14 @@ void pgemm_test(char TRANSA, char TRANSB, Field ALPHA, Field BETA,
     std::cout << "MAX DIFF " << maxDiff << std::endl;
 
 
-    BOOST_CHECK_MESSAGE( maxDiff < 1e-10, 
+    EXPECT_NEAR( maxDiff, 0., 1.e-10 ) <<
       "MAX DIFF " << maxDiff
       << " " << std::numeric_limits<RealType>::epsilon() 
-      << " " << std::numeric_limits<RealType>::epsilon() * M*N*K 
-    );
+      << " " << std::numeric_limits<RealType>::epsilon() * M*N*K ;
 
   });
 
-  NotRootExecute(MPI_COMM_WORLD,[&](){ BOOST_CHECK(true); });
+  NotRootExecute(MPI_COMM_WORLD,[&](){ EXPECT_TRUE(true); });
 
   // Synchronize processes
   MPI_Barrier(MPI_COMM_WORLD);
@@ -128,7 +126,7 @@ void pgemm_test(char TRANSA, char TRANSB, Field ALPHA, Field BETA,
 };
 
 #define TEST_IMPL_F(NAME,F,RF,TA,TB,MB,NB,M,N,K)\
-  BOOST_AUTO_TEST_CASE(NAME) { \
+  TEST(PGEMM,NAME) { \
     pgemm_test<F,MB,NB,RF>(TA,TB,generate<F>(),generate<F>(),M,N,K); \
   };
 
@@ -178,4 +176,3 @@ TEST_IMPL(PGEMM_2x1_Rect_NN,'N','N',2,1,CXXBLACS_M,CXXBLACS_N,CXXBLACS_K);
 TEST_IMPL(PGEMM_1x2_Rect_NN,'N','N',1,2,CXXBLACS_M,CXXBLACS_N,CXXBLACS_K);
 
 
-BOOST_AUTO_TEST_SUITE_END()

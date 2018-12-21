@@ -20,11 +20,8 @@
 
 add_executable( scatter_gather_test ../ut.cxx scatter.cxx gather.cxx )
 
-target_compile_definitions(scatter_gather_test PUBLIC 
-  BOOST_TEST_MODULE=SCATTER_GATHER)
-target_include_directories(scatter_gather_test PUBLIC 
-  ${PROJECT_SOURCE_DIR} ${PROJECT_SOURCE_DIR}/tests)
-target_link_libraries( scatter_gather_test PUBLIC ${CXXBLACS_LINKER} )
+target_compile_definitions(scatter_gather_test PUBLIC BOOST_TEST_MODULE=SCATTER_GATHER)
+target_link_libraries( scatter_gather_test PUBLIC ut_framework )
 
 
 

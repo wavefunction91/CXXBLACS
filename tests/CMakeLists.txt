@@ -18,6 +18,15 @@
 #
 #
 
+include( HandleGTest )
+
+
+
+add_library( ut_framework INTERFACE IMPORTED )
+target_link_libraries( ut_framework INTERFACE CXXBLACS::CXXBLACS )
+target_link_libraries( ut_framework INTERFACE CXXBLACS::gtest )
+target_include_directories( ut_framework INTERFACE ${PROJECT_SOURCE_DIR}/tests )
+
 add_subdirectory(scatter_gather)
 add_subdirectory(redistribute)
 add_subdirectory(scalapack)

@@ -19,7 +19,6 @@
 
 #include "scalapack_ut.hpp"
 
-BOOST_AUTO_TEST_SUITE(PSYEV)
 
 template <typename Field, CB_INT MB>
 void psyev_test( CB_INT N ) {
@@ -96,15 +95,14 @@ void psyev_test( CB_INT N ) {
 
     Field maxDiff = *std::max_element(DIFF.begin(),DIFF.end());
 
-    BOOST_CHECK_MESSAGE( maxDiff < 1e-10, 
+    EXPECT_NEAR( maxDiff, 0., 1e-10 ) <<
       "MAX DIFF " << maxDiff
       << " " << std::numeric_limits<Field>::epsilon() 
-      << " " << std::numeric_limits<Field>::epsilon() * N*N*N 
-    );
+      << " " << std::numeric_limits<Field>::epsilon() * N*N*N ;
 
   });
 
-  NotRootExecute(MPI_COMM_WORLD,[&](){ BOOST_CHECK(true); });
+  NotRootExecute(MPI_COMM_WORLD,[&](){ EXPECT_TRUE(true); });
 
 
   // Synchronize processes
@@ -114,7 +112,7 @@ void psyev_test( CB_INT N ) {
 
 
 #define PSYEV_TEST_IMPL_F(NAME,F,MB,N)\
-  BOOST_AUTO_TEST_CASE(NAME) { psyev_test<F,MB>(N); };
+  TEST(PSYEV,NAME) { psyev_test<F,MB>(N); };
 
 #define PSYEV_TEST_IMPL(NAME,MB,N)\
   PSYEV_TEST_IMPL_F(NAME##_Double, double, MB, N)\
@@ -124,11 +122,9 @@ void psyev_test( CB_INT N ) {
 
 PSYEV_TEST_IMPL(PSYEV_2x2,2,CXXBLACS_N);
 
-BOOST_AUTO_TEST_SUITE_END()
 
 
 
-BOOST_AUTO_TEST_SUITE(PHEEV)
 
 template <typename Field, CB_INT MB, 
   typename RealType = typename Field::value_type>
@@ -214,15 +210,14 @@ void pheev_test( CB_INT N ) {
 
     RealType maxDiff = *std::max_element(DIFF.begin(),DIFF.end());
 
-    BOOST_CHECK_MESSAGE( maxDiff < 1e-10, 
+    EXPECT_NEAR( maxDiff, 0., 1e-10 ) << 
       "MAX DIFF " << maxDiff
       << " " << std::numeric_limits<Field>::epsilon() 
-      << " " << std::numeric_limits<Field>::epsilon() * Field(N*N*N)
-    );
+      << " " << std::numeric_limits<Field>::epsilon() * Field(N*N*N) ;
 
   });
 
-  NotRootExecute(MPI_COMM_WORLD,[&](){ BOOST_CHECK(true); });
+  NotRootExecute(MPI_COMM_WORLD,[&](){ EXPECT_TRUE(true); });
 
 
   // Synchronize processes
@@ -232,7 +227,7 @@ void pheev_test( CB_INT N ) {
 
 
 #define PHEEV_TEST_IMPL_F(NAME,F,MB,N)\
-  BOOST_AUTO_TEST_CASE(NAME) { pheev_test<F,MB>(N); };
+  TEST(PHEEV,NAME) { pheev_test<F,MB>(N); };
 
 #define PHEEV_TEST_IMPL(NAME,MB,N)\
   PHEEV_TEST_IMPL_F(NAME##_CDouble, std::complex<double>, MB, N)\
@@ -242,5 +237,3 @@ void pheev_test( CB_INT N ) {
 
 PHEEV_TEST_IMPL(PHEEV_2x2,2,CXXBLACS_N);
 
-
-BOOST_AUTO_TEST_SUITE_END()

@@ -19,10 +19,6 @@
 
 #include "redistribute.hpp"
 
-BOOST_AUTO_TEST_SUITE(REDIST)
-
-
-
 template <typename Field, size_t M, size_t N>
 void redistribute_test() {
 
@@ -81,13 +77,11 @@ void redistribute_test() {
       std::tie(I,J) = grid.globalFromLocal(iLocR,iLocC);
       CB_INT K = I + J*M;
 
-      BOOST_CHECK_MESSAGE(
-        (std::abs(ALoc[iLocR + iLocC*NLocR] -  generate(Field(K)))) < 1e-16, 
+      EXPECT_NEAR( std::abs(ALoc[iLocR + iLocC*NLocR]),  std::abs(generate(Field(K))),  1e-16 ) <<
         "Redistributed Buffer Not Correct! " << 
         "(" << iLocR << ", " << iLocC << ") -> " <<
         "(" << I     << ", " << J     << "): " <<
-        ALoc[iLocR + iLocC*NLocR] << ", " << K 
-      );
+        ALoc[iLocR + iLocC*NLocR] << ", " << K << std::endl; 
 
     }
 
@@ -106,7 +100,7 @@ void redistribute_test() {
 };
 
 #define TEST_IMPL_F(NAME,F,M,N)\
-  BOOST_AUTO_TEST_CASE(NAME) { redistribute_test<F,M,N>(); };
+  TEST(REDIST,NAME) { redistribute_test<F,M,N>(); };
 
 #define TEST_IMPL(NAME,M,N) \
   TEST_IMPL_F(NAME##_Float,        float,               M,N)\
@@ -117,5 +111,3 @@ void redistribute_test() {
 
 TEST_IMPL(Redistribute_SquareMatrix,CXXBLACS_N,CXXBLACS_N);
 
-
-BOOST_AUTO_TEST_SUITE_END()

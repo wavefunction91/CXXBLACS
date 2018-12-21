@@ -17,38 +17,29 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/**
- *
- *  This file acts as a generic template for CXXBLACS UTs through
- *  the Boost.Test framework. When compiling, one must add a definition
- *  of BOOST_TEST_MODULE in the compiler invocation
- *
- *  CXX -DBOOST_TEST_MODULE=ModName 
- *
- */
-
 
 #include <mpi.h>
+#include <gtest/gtest.h>
 
-#include <boost/test/impl/unit_test_main.ipp>
-#include <boost/test/impl/framework.ipp>
-#include <boost/test/unit_test.hpp>
+int main(int argc, char **argv) {
 
-using namespace boost::unit_test;
+  MPI_Init(NULL,NULL);
 
+  // Only get print from root
+  ::testing::TestEventListeners& listeners =
+      ::testing::UnitTest::GetInstance()->listeners();
 
-/**
- *  \brief A global fixture for CXXBLACS UTs through the
- *  Boost.Test framework.
- *
- *  Ensures that MPI_Init() and MPI_Finalize()
- *  only get called once throughout the test module
- */
-struct CXXBLACSConfig {
+  int rank; MPI_Comm_rank( MPI_COMM_WORLD, &rank );
+  if( rank != 0 ) {
+      delete listeners.Release(listeners.default_result_printer());
+  }
 
-  CXXBLACSConfig() { MPI_Init(NULL,NULL); }
-  ~CXXBLACSConfig() { MPI_Finalize(); }
+  // Init GT and run tests
+  ::testing::InitGoogleTest(&argc, argv);
+  auto gt_return = RUN_ALL_TESTS();
 
-};
+  MPI_Finalize();
 
-BOOST_GLOBAL_FIXTURE( CXXBLACSConfig );
+  return gt_return; // return GT result
+
+}

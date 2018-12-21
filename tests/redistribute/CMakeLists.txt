@@ -20,11 +20,8 @@
 
 add_executable( redistribute_test ../ut.cxx redistribute.cxx )
 
-target_compile_definitions(redistribute_test PUBLIC 
-  BOOST_TEST_MODULE=REDISTRIBUTE)
-target_include_directories(redistribute_test PUBLIC 
-  ${PROJECT_SOURCE_DIR} ${PROJECT_SOURCE_DIR}/tests)
-target_link_libraries( redistribute_test PUBLIC ${CXXBLACS_LINKER} )
+target_compile_definitions(redistribute_test PUBLIC BOOST_TEST_MODULE=REDISTRIBUTE)
+target_link_libraries( redistribute_test PUBLIC ut_framework )
 
 
 

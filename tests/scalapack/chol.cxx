@@ -23,8 +23,6 @@ template <typename T> T SmartConj(const T);
 template<> inline double SmartConj(const double x){ return x; }
 template<> inline std::complex<double> SmartConj( const std::complex<double>  x ){ return std::conj(x); }
 
-BOOST_AUTO_TEST_SUITE(PPOTRF)
-
 template <typename Field, typename RealType, CB_INT MB>
 void ppotrf_test( CB_INT N ) {
 
@@ -91,14 +89,13 @@ void ppotrf_test( CB_INT N ) {
 
     RealType maxDiff = *std::max_element(DIFF.begin(),DIFF.end());
 
-    BOOST_CHECK_MESSAGE( maxDiff < 1e-10, 
+    EXPECT_NEAR( maxDiff, 0. ,1e-10 ) << 
       "MAX DIFF " << maxDiff
-      << " " << std::numeric_limits<Field>::epsilon() 
-    );
+      << " " << std::numeric_limits<Field>::epsilon(); 
 
   });
 
-  NotRootExecute(MPI_COMM_WORLD,[&](){ BOOST_CHECK(true); });
+  NotRootExecute(MPI_COMM_WORLD,[&](){ EXPECT_TRUE(true); });
 
 
   // Synchronize processes
@@ -108,7 +105,7 @@ void ppotrf_test( CB_INT N ) {
 
 
 #define TEST_IMPL_F(NAME,F,RF,MB,N)\
-  BOOST_AUTO_TEST_CASE(NAME) { ppotrf_test<F,RF,MB>(N); };
+  TEST(PPOTRF,NAME) { ppotrf_test<F,RF,MB>(N); };
 
 #define TEST_IMPL(NAME,MB,N)\
   TEST_IMPL_F(NAME##_Double, double, double, MB, N)\
@@ -120,7 +117,6 @@ void ppotrf_test( CB_INT N ) {
 
 TEST_IMPL(PPOTRF_2x2,2,CXXBLACS_N);
 
-BOOST_AUTO_TEST_SUITE_END()
 
 
 

@@ -19,8 +19,6 @@
 
 #include "scatter_gather.hpp"
 
-BOOST_AUTO_TEST_SUITE(GATHER)
-
 
 
 template <typename Field, size_t MB, size_t NB, size_t M, size_t N>
@@ -66,19 +64,17 @@ void gather_test() {
       auto I = K % M;
       auto J = K / M;
 
-      BOOST_CHECK_MESSAGE(
-        (std::abs(A[K] -  generate(Field(K)))) < 1e-16, 
+      EXPECT_NEAR( std::abs(A[K]),  std::abs(generate(Field(K))), 1e-16 ) << 
         "Gathered Buffer Not Correct! " << 
         "(" << I     << ", " << J     << "): " <<
-        A[K] << ", " << K 
-      );
+        A[K] << ", " << K << std::endl;
 
     }
 
   });
 
 
-  NotRootExecute(MPI_COMM_WORLD,[&]() { BOOST_CHECK(true); } );
+  NotRootExecute(MPI_COMM_WORLD,[&]() { EXPECT_TRUE(true); } );
 
   // Synchronize processes
   MPI_Barrier(MPI_COMM_WORLD);
@@ -86,7 +82,7 @@ void gather_test() {
 };
 
 #define TEST_IMPL_F(NAME,F,MB,NB,M,N)\
-  BOOST_AUTO_TEST_CASE(NAME) { gather_test<F,MB,NB,M,N>(); };
+  TEST(GATHER,NAME) { gather_test<F,MB,NB,M,N>(); };
 
 #define TEST_IMPL(NAME,MB,NB,M,N) \
   TEST_IMPL_F(NAME##_Float,        float,               MB,NB,M,N)\
@@ -107,5 +103,3 @@ TEST_IMPL(Gather_2x2_RectangularMatrix_SB,2,2,CXXBLACS_N,CXXBLACS_M);
 TEST_IMPL(Gather_1x2_RectangularMatrix_SB,1,2,CXXBLACS_N,CXXBLACS_M);
 TEST_IMPL(Gather_2x1_RectangularMatrix_SB,2,1,CXXBLACS_N,CXXBLACS_M);
 
-
-BOOST_AUTO_TEST_SUITE_END()

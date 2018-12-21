@@ -20,11 +20,8 @@
 
 add_executable( scalapack_test ../ut.cxx pgemm.cxx ptrmm.cxx eig.cxx solve.cxx chol.cxx )
 
-target_compile_definitions(scalapack_test PUBLIC 
-  BOOST_TEST_MODULE=SCALAPACK)
-target_include_directories(scalapack_test PUBLIC 
-  ${PROJECT_SOURCE_DIR} ${PROJECT_SOURCE_DIR}/tests)
-target_link_libraries( scalapack_test PUBLIC ${CXXBLACS_LINKER} )
+target_compile_definitions(scalapack_test PUBLIC BOOST_TEST_MODULE=SCALAPACK)
+target_link_libraries( scalapack_test PUBLIC ut_framework )
 
 
 

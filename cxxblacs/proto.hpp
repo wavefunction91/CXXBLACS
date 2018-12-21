@@ -26,7 +26,7 @@
 
 
 #ifndef CXXBLACS_HAS_BLACS
-#define CXXBLACS_HAX_BLACS
+#define CXXBLACS_HAS_BLACS
 
 
 extern "C" {

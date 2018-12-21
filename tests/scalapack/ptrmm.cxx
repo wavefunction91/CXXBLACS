@@ -19,9 +19,6 @@
 
 #include "scalapack_ut.hpp"
 
-BOOST_AUTO_TEST_SUITE(PTRMM)
-
-
 
 template <typename Field, CB_INT MB, CB_INT NB, typename RealType = Field>
 void ptrmm_test(char SIDE, char UPLO, char TRANSA, char DIAG,  Field ALPHA,
@@ -106,15 +103,14 @@ void ptrmm_test(char SIDE, char UPLO, char TRANSA, char DIAG,  Field ALPHA,
     std::cout << "MAX DIFF " << maxDiff << std::endl;
 
 
-    BOOST_CHECK_MESSAGE( maxDiff < 1e-10, 
+    EXPECT_NEAR( maxDiff, 0., 1e-10 ) << 
       "MAX DIFF " << maxDiff
       << " " << std::numeric_limits<RealType>::epsilon() 
-      << " " << std::numeric_limits<RealType>::epsilon() * M*N*M 
-    );
+      << " " << std::numeric_limits<RealType>::epsilon() * M*N*M ;
 
   });
 
-  NotRootExecute(MPI_COMM_WORLD,[&](){ BOOST_CHECK(true); });
+  NotRootExecute(MPI_COMM_WORLD,[&](){ EXPECT_TRUE(true); });
 
   // Synchronize processes
   MPI_Barrier(MPI_COMM_WORLD);
@@ -122,7 +118,7 @@ void ptrmm_test(char SIDE, char UPLO, char TRANSA, char DIAG,  Field ALPHA,
 };
 
 #define TEST_IMPL_F(NAME,F,RF,SIDE,UPLO,TA,DIAG,MB,NB,M,N)\
-  BOOST_AUTO_TEST_CASE(NAME) { \
+  TEST(PTRMM,NAME) { \
     ptrmm_test<F,MB,NB,RF>(SIDE,UPLO,TA,DIAG,generate<F>(),M,N); \
   };
 
@@ -231,4 +227,3 @@ TEST_IMPL(PTRMM_2x1_Rect_LUNU,'L','U','N','U',2,1,CXXBLACS_M,CXXBLACS_N);
 TEST_IMPL(PTRMM_1x2_Rect_LUNU,'L','U','N','U',1,2,CXXBLACS_M,CXXBLACS_N);
 
 
-BOOST_AUTO_TEST_SUITE_END()

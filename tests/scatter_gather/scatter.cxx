@@ -19,9 +19,6 @@
 
 #include "scatter_gather.hpp"
 
-BOOST_AUTO_TEST_SUITE(SCATTER)
-
-
 
 template <typename Field, size_t MB, size_t NB, size_t M, size_t N>
 void scatter_test() {
@@ -56,13 +53,10 @@ void scatter_test() {
     std::tie(I,J) = grid.globalFromLocal(iLocR,iLocC);
     CB_INT K = I + J*M;
 
-    BOOST_CHECK_MESSAGE(
-      (std::abs(ALoc[iLocR + iLocC*NLocR] -  generate(Field(K)))) < 1e-16, 
-      "Scattered Buffer Not Correct! " << 
-      "(" << iLocR << ", " << iLocC << ") -> " <<
-      "(" << I     << ", " << J     << "): " <<
-      ALoc[iLocR + iLocC*NLocR] << ", " << K 
-    );
+      EXPECT_NEAR( std::abs(ALoc[iLocR + iLocC*NLocR]),  std::abs(generate(Field(K))), 1e-16 ) << 
+        "Scattered Buffer Not Correct! " << 
+        "(" << I     << ", " << J     << "): " <<
+        A[K] << ", " << K << std::endl;
 
   }
 
@@ -72,7 +66,7 @@ void scatter_test() {
 };
 
 #define TEST_IMPL_F(NAME,F,MB,NB,M,N)\
-  BOOST_AUTO_TEST_CASE(NAME) { scatter_test<F,MB,NB,M,N>(); };
+  TEST(SCATTER,NAME) { scatter_test<F,MB,NB,M,N>(); };
 
 #define TEST_IMPL(NAME,MB,NB,M,N) \
   TEST_IMPL_F(NAME##_Float,        float,               MB,NB,M,N)\
@@ -94,4 +88,3 @@ TEST_IMPL(Scatter_1x2_RectangularMatrix_SB,1,2,CXXBLACS_N,CXXBLACS_M);
 TEST_IMPL(Scatter_2x1_RectangularMatrix_SB,2,1,CXXBLACS_N,CXXBLACS_M);
 
 
-BOOST_AUTO_TEST_SUITE_END()

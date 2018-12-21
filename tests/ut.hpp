@@ -23,20 +23,12 @@
 
 /**
  *  This header contains the configuration information common to
- *  all CXXBLACS UTs through the Boost.Test framework. Should be
+ *  all CXXBLACS UTs through the GTest framework. Should be
  *  included in all UTs
  */
 
-// BOOST_NO_MAIN has strange behaviour if BOOST_TEST_MODULE is defined.
-// This is already taken care of in ut.cxx
-#ifdef BOOST_TEST_MODULE
-  #undef BOOST_TEST_MODULE
-#endif
-
-
-
-#define BOOST_NO_MAIN
-#include <boost/test/unit_test.hpp>
+// GTest header
+#include <gtest/gtest.h>
 
 #include <cxxblacs.hpp>
 

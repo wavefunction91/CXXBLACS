@@ -25,7 +25,6 @@ template<> inline std::complex<double> SmartConj( const std::complex<double>  x 
 
 
 
-BOOST_AUTO_TEST_SUITE(PGESV)
 
 template <typename T, typename U>
 using Diag_t = 
@@ -115,7 +114,7 @@ void pgesv_test(const CB_INT N, const CB_INT NRHS,
   RealType maxDiff = std::abs(*std::max_element(BLocCpy.begin(), BLocCpy.end(),
       [&](Field x, Field y){ return std::abs(x) < std::abs(y); }));
 
-  BOOST_CHECK_MESSAGE( maxDiff < 1e-10, "MAX DIFF " << maxDiff );
+  EXPECT_NEAR( maxDiff, 0., 1e-10 );
 
 };
 
@@ -166,7 +165,7 @@ void DIAGC(const CB_INT N, T* A, const CB_INT IA, const CB_INT JA,
 };
 
 #define TEST_IMPL_F(NAME,F,RF,DIAGF,MB,N,NRHS) \
-  BOOST_AUTO_TEST_CASE(NAME) { pgesv_test<F,MB,RF>(N,NRHS,DIAGF<F>); };
+  TEST(PGESV,NAME) { pgesv_test<F,MB,RF>(N,NRHS,DIAGF<F>); };
 
 #define TEST_IMPL(NAME,MB,N,NRHS) \
   TEST_IMPL_F(NAME##_Double,double,double,DIAG,MB,N,NRHS);\
@@ -176,5 +175,4 @@ void DIAGC(const CB_INT N, T* A, const CB_INT IA, const CB_INT JA,
 TEST_IMPL(PGESV_2x2,2,CXXBLACS_N,CXXBLACS_NRHS);
 
 
-BOOST_AUTO_TEST_SUITE_END()
 
