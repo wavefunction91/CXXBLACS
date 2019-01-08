@@ -293,48 +293,166 @@ namespace CXXBLACS {
   PHEEVD_IMPL(std::complex<float> ,float ,pcheevd_);
   PHEEVD_IMPL(std::complex<double>,double,pzheevd_);
 
+  // LWORK obtaining variants
+
   template <typename Field>
   inline CB_INT PSYEV(const char JOBZ, const char UPLO, const CB_INT N,
-    Field *A, const CB_INT IA, const CB_INT JA, const ScaLAPACK_Desc_t DESCA,
-    Field *W, Field *Z, const CB_INT IZ, const CB_INT JZ, 
-    const ScaLAPACK_Desc_t DESCZ, Field *WORK, const CB_INT LWORK) {
+    Field *A, const CB_INT IA, const CB_INT JA, const CB_INT *DESCA,
+    Field *W, Field *Z, const CB_INT IZ, const CB_INT JZ, const CB_INT *DESCZ) {
 
-    return PSYEV(JOBZ,UPLO,N,A,IA,JA,&DESCA[0],W,Z,IZ,JZ,&DESCZ[0],WORK,LWORK);
+    CB_INT LWORK = -1;
+    std::vector< Field > WORK(5);
+
+    auto INFO = PSYEV( JOBZ, UPLO, N, A, IA, JA, DESCA, W, Z, IZ, JZ, DESCZ,
+                  WORK.data(), LWORK );
+
+    if( INFO == 0) {
+
+      LWORK = CB_INT( WORK[0] );
+      WORK.resize(LWORK);
+      INFO = PSYEV( JOBZ, UPLO, N, A, IA, JA, DESCA, W, Z, IZ, JZ, DESCZ,
+               WORK.data(), LWORK );
+
+    }
+
+    return INFO;
 
   }
 
   template <typename Field>
   inline CB_INT PSYEVD(const char JOBZ, const char UPLO, const CB_INT N,
-    Field *A, const CB_INT IA, const CB_INT JA, const ScaLAPACK_Desc_t DESCA,
-    Field *W, Field *Z, const CB_INT IZ, const CB_INT JZ, 
-    const ScaLAPACK_Desc_t DESCZ, Field *WORK, const CB_INT LWORK,
-    CB_INT *IWORK, const CB_INT LIWORK ) {
+    Field *A, const CB_INT IA, const CB_INT JA, const CB_INT *DESCA,
+    Field *W, Field *Z, const CB_INT IZ, const CB_INT JZ, const CB_INT *DESCZ) {
 
-    return PSYEVD(JOBZ,UPLO,N,A,IA,JA,&DESCA[0],W,Z,IZ,JZ,&DESCZ[0],WORK,LWORK,IWORK,LIWORK);
+    CB_INT LWORK  = -1;
+    CB_INT LIWORK = -1;
+    std::vector< Field >  WORK(5);
+    std::vector< CB_INT > IWORK(5);
+
+    auto INFO = PSYEVD( JOBZ, UPLO, N, A, IA, JA, DESCA, W, Z, IZ, JZ, DESCZ,
+                  WORK.data(), LWORK, IWORK.data(), LIWORK );
+
+    if( INFO == 0 ) {
+
+      LWORK  = CB_INT( WORK[0] );
+      LIWORK = IWORK[0];
+      WORK.resize(LWORK);
+      IWORK.resize(LIWORK);
+
+      INFO = PSYEVD( JOBZ, UPLO, N, A, IA, JA, DESCA, W, Z, IZ, JZ, DESCZ,
+               WORK.data(), LWORK, IWORK.data(), LIWORK );
+
+    }
+
+    return INFO;
+
 
   }
 
   template <typename Field, typename RealField>
   inline CB_INT PHEEV(const char JOBZ, const char UPLO, const CB_INT N,
-    Field *A, const CB_INT IA, const CB_INT JA, const ScaLAPACK_Desc_t DESCA,
+    Field *A, const CB_INT IA, const CB_INT JA, const CB_INT *DESCA,
     RealField *W, Field *Z, const CB_INT IZ, const CB_INT JZ, 
-    const ScaLAPACK_Desc_t DESCZ, Field *WORK, const CB_INT LWORK, 
-    RealField *RWORK, const CB_INT LRWORK) {
+    const CB_INT *DESCZ ) {
 
-    return PHEEV(JOBZ,UPLO,N,A,IA,JA,&DESCA[0],W,Z,IZ,JZ,&DESCZ[0],WORK,LWORK,
-        RWORK,LRWORK);
+    CB_INT LRWORK = 4*N - 2;
+    std::vector< RealField > RWORK(LRWORK);
+
+    CB_INT LWORK = -1;
+    std::vector< Field > WORK(5);
+
+    auto INFO = PHEEV( JOBZ, UPLO, N, A, IA, JA, DESCA, W, Z, IZ, JZ, DESCZ,
+                  WORK.data(), LWORK, RWORK.data(), LRWORK );
+
+    if( INFO == 0) {
+
+      LWORK = CB_INT( std::real(WORK[0]) );
+      WORK.resize(LWORK);
+      INFO = PHEEV( JOBZ, UPLO, N, A, IA, JA, DESCA, W, Z, IZ, JZ, DESCZ,
+               WORK.data(), LWORK, RWORK.data(), LRWORK );
+
+    }
+
+    return INFO;
+
 
   }
 
   template <typename Field, typename RealField>
   inline CB_INT PHEEVD(const char JOBZ, const char UPLO, const CB_INT N,
+    Field *A, const CB_INT IA, const CB_INT JA, const CB_INT *DESCA,
+    RealField *W, Field *Z, const CB_INT IZ, const CB_INT JZ, 
+    const CB_INT *DESCZ) {
+
+    CB_INT LRWORK = 4*N - 2;
+    std::vector< RealField > RWORK(LRWORK);
+
+    CB_INT LWORK  = -1;
+    CB_INT LIWORK = -1;
+    std::vector< Field >  WORK(5);
+    std::vector< CB_INT > IWORK(5);
+
+    auto INFO = PHEEVD( JOBZ, UPLO, N, A, IA, JA, DESCA, W, Z, IZ, JZ, DESCZ,
+                  WORK.data(), LWORK, RWORK.data(), LRWORK, IWORK.data(), 
+                  LIWORK );
+
+    if( INFO == 0 ) {
+
+      LWORK  = CB_INT( std::real(WORK[0]) );
+      LIWORK = IWORK[0];
+      WORK.resize(LWORK);
+      IWORK.resize(LIWORK);
+
+      INFO = PHEEVD( JOBZ, UPLO, N, A, IA, JA, DESCA, W, Z, IZ, JZ, DESCZ,
+               WORK.data(), LWORK, RWORK.data(), LRWORK, IWORK.data(), 
+               LIWORK );
+
+    }
+
+    return INFO;
+  }
+
+
+
+  // Conversion from ScaLAPACK_Desc_t -> CB_INT*
+
+  template <typename Field, typename... Args>
+  inline CB_INT PSYEV(const char JOBZ, const char UPLO, const CB_INT N,
+    Field *A, const CB_INT IA, const CB_INT JA, const ScaLAPACK_Desc_t DESCA,
+    Field *W, Field *Z, const CB_INT IZ, const CB_INT JZ, 
+    const ScaLAPACK_Desc_t DESCZ, Args... args) {
+
+    return PSYEV(JOBZ,UPLO,N,A,IA,JA,&DESCA[0],W,Z,IZ,JZ,&DESCZ[0],args...);
+
+  }
+
+  template <typename Field, typename... Args>
+  inline CB_INT PSYEVD(const char JOBZ, const char UPLO, const CB_INT N,
+    Field *A, const CB_INT IA, const CB_INT JA, const ScaLAPACK_Desc_t DESCA,
+    Field *W, Field *Z, const CB_INT IZ, const CB_INT JZ, 
+    const ScaLAPACK_Desc_t DESCZ, Args... args) {
+
+    return PSYEVD(JOBZ,UPLO,N,A,IA,JA,&DESCA[0],W,Z,IZ,JZ,&DESCZ[0],args...);
+
+  }
+
+  template <typename Field, typename RealField, typename... Args>
+  inline CB_INT PHEEV(const char JOBZ, const char UPLO, const CB_INT N,
     Field *A, const CB_INT IA, const CB_INT JA, const ScaLAPACK_Desc_t DESCA,
     RealField *W, Field *Z, const CB_INT IZ, const CB_INT JZ, 
-    const ScaLAPACK_Desc_t DESCZ, Field *WORK, const CB_INT LWORK, 
-    RealField *RWORK, const CB_INT LRWORK, CB_INT *IWORK, const CB_INT LIWORK) {
+    const ScaLAPACK_Desc_t DESCZ, Args... args) {
 
-    return PHEEV(JOBZ,UPLO,N,A,IA,JA,&DESCA[0],W,Z,IZ,JZ,&DESCZ[0],WORK,LWORK,
-        RWORK,LRWORK,IWORK,LIWORK);
+    return PHEEV(JOBZ,UPLO,N,A,IA,JA,&DESCA[0],W,Z,IZ,JZ,&DESCZ[0],args...);
+
+  }
+
+  template <typename Field, typename RealField, typename... Args>
+  inline CB_INT PHEEVD(const char JOBZ, const char UPLO, const CB_INT N,
+    Field *A, const CB_INT IA, const CB_INT JA, const ScaLAPACK_Desc_t DESCA,
+    RealField *W, Field *Z, const CB_INT IZ, const CB_INT JZ, 
+    const ScaLAPACK_Desc_t DESCZ, Args... args ) { 
+
+    return PHEEVD(JOBZ,UPLO,N,A,IA,JA,&DESCA[0],W,Z,IZ,JZ,&DESCZ[0],args...);
 
   }
 

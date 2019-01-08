@@ -60,22 +60,9 @@ void psyev_test( CB_INT N ) {
   // Distribute to Grid 
   grid.Scatter(N,N,A.data(),N,ALoc.data(),MLoc,0,0);
 
-
-  // Get LWORK
-  CB_INT LWORK = -1;
-  std::vector<Field> WORK(5);
-
-  CXXBLACS::PSYEV('V','U',N,ALoc.data(),1,1,&DescA[0],W.data(),
-    ZLoc.data(),1,1,&DescA[0],WORK.data(),LWORK);
-
-  LWORK = CB_INT(WORK[0]);
-  WORK.resize(LWORK);
-
   // Diagonalize the matrix
-  CXXBLACS::PSYEV('V','U',N,ALoc.data(),1,1,&DescA[0],W.data(),
-    ZLoc.data(),1,1,&DescA[0],WORK.data(),LWORK);
-
-
+  CXXBLACS::PSYEV('V','U',N,ALoc.data(),1,1,DescA,W.data(),
+    ZLoc.data(),1,1,DescA);
 
   // Gather the eigenvectors to root process
   grid.Gather(N,N,Z.data(),N,ZLoc.data(),MLoc,0,0);
@@ -150,28 +137,9 @@ void psyevd_test( CB_INT N ) {
   // Distribute to Grid 
   grid.Scatter(N,N,A.data(),N,ALoc.data(),MLoc,0,0);
 
-
-  // Get LWORK
-  CB_INT LWORK = -1;
-  CB_INT LIWORK = -1;
-  std::vector<Field> WORK(5);
-  std::vector<CB_INT> IWORK(5);
-
-  CXXBLACS::PSYEVD('V','U',N,ALoc.data(),1,1,&DescA[0],W.data(),
-    ZLoc.data(),1,1,&DescA[0],WORK.data(),LWORK,IWORK.data(),
-    LIWORK);
-
-  LWORK  = CB_INT(WORK[0]);
-  LIWORK = CB_INT(IWORK[0]);
-  WORK.resize(LWORK);
-  IWORK.resize(LIWORK);
-
   // Diagonalize the matrix
-  CXXBLACS::PSYEVD('V','U',N,ALoc.data(),1,1,&DescA[0],W.data(),
-    ZLoc.data(),1,1,&DescA[0],WORK.data(),LWORK,IWORK.data(),
-    LIWORK);
-
-
+  CXXBLACS::PSYEVD('V','U',N,ALoc.data(),1,1,DescA,W.data(),
+    ZLoc.data(),1,1,DescA);
 
   // Gather the eigenvectors to root process
   grid.Gather(N,N,Z.data(),N,ZLoc.data(),MLoc,0,0);
@@ -273,26 +241,9 @@ void pheev_test( CB_INT N ) {
   // Distribute to Grid 
   grid.Scatter(N,N,A.data(),N,ALoc.data(),MLoc,0,0);
 
-
-  // Real workspace
-  CB_INT LRWORK = 4*N-2;
-  std::vector<RealType> RWORK(LRWORK);
-
-  // Get LWORK and allocate WORK
-  CB_INT LWORK  = -1;
-  std::vector<Field>    WORK(5);
-
-  CXXBLACS::PHEEV('V','U',N,ALoc.data(),1,1,&DescA[0],W.data(),
-    ZLoc.data(),1,1,&DescA[0],WORK.data(),LWORK,RWORK.data(),
-    LRWORK);
-
-  LWORK  = CB_INT(std::real(WORK[0]));
-  WORK .resize(LWORK );
-
   // Diagonalize the matrix
-  CXXBLACS::PHEEV('V','U',N,ALoc.data(),1,1,&DescA[0],W.data(),
-    ZLoc.data(),1,1,&DescA[0],WORK.data(),LWORK,RWORK.data(),
-    LRWORK);
+  CXXBLACS::PHEEV('V','U',N,ALoc.data(),1,1,DescA,W.data(),
+    ZLoc.data(),1,1,DescA);
 
 
 
@@ -372,32 +323,9 @@ void pheevd_test( CB_INT N ) {
   // Distribute to Grid 
   grid.Scatter(N,N,A.data(),N,ALoc.data(),MLoc,0,0);
 
-
-  // Real workspace
-  CB_INT LRWORK = 4*N-2;
-  std::vector<RealType> RWORK(LRWORK);
-
-  // Get LWORK and allocate WORK
-  CB_INT LWORK = -1;
-  CB_INT LIWORK = -1;
-  std::vector<Field> WORK(5);
-  std::vector<CB_INT> IWORK(5);
-
-  CXXBLACS::PHEEVD('V','U',N,ALoc.data(),1,1,&DescA[0],W.data(),
-    ZLoc.data(),1,1,&DescA[0],WORK.data(),LWORK,RWORK.data(),
-    LRWORK, IWORK.data(), LIWORK);
-
-  LWORK  = CB_INT(std::real(WORK[0]));
-  LIWORK = CB_INT(IWORK[0]);
-  WORK.resize(LWORK );
-  IWORK.resize(LIWORK);
-
   // Diagonalize the matrix
-  CXXBLACS::PHEEVD('V','U',N,ALoc.data(),1,1,&DescA[0],W.data(),
-    ZLoc.data(),1,1,&DescA[0],WORK.data(),LWORK,RWORK.data(),
-    LRWORK, IWORK.data(), LIWORK);
-
-
+  CXXBLACS::PHEEVD('V','U',N,ALoc.data(),1,1,DescA,W.data(),
+    ZLoc.data(),1,1,DescA);
 
   // Gather the eigenvectors to root process
   grid.Gather(N,N,Z.data(),N,ZLoc.data(),MLoc,0,0);
