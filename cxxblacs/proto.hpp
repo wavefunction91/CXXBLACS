@@ -180,16 +180,31 @@ extern "C" {
     const CB_INT*, const CB_INT*, F*, F*, const CB_INT*, const CB_INT*,\
     const CB_INT*, F*, const CB_INT*, CB_INT*);
 
+  #define psyevd(F,FUNC)\
+  void FUNC(const char*, const char*, const CB_INT*, F*, const CB_INT*, \
+    const CB_INT*, const CB_INT*, F*, F*, const CB_INT*, const CB_INT*,\
+    const CB_INT*, F*, const CB_INT*, CB_INT*, const CB_INT*, CB_INT*);
+
   #define pheev(F,RF,FUNC)\
   void FUNC(const char*, const char*, const CB_INT*, F*, const CB_INT*, \
     const CB_INT*, const CB_INT*, RF*, F*, const CB_INT*, const CB_INT*,\
     const CB_INT*, F*, const CB_INT*, RF*, const CB_INT*, CB_INT*);
 
+  #define pheevd(F,RF,FUNC)\
+  void FUNC(const char*, const char*, const CB_INT*, F*, const CB_INT*, \
+    const CB_INT*, const CB_INT*, RF*, F*, const CB_INT*, const CB_INT*,\
+    const CB_INT*, F*, const CB_INT*, RF*, const CB_INT*, \
+    CB_INT*, const CB_INT*, CB_INT*);
+
   psyev(float ,pssyev_);
   psyev(double,pdsyev_);
+  psyevd(float ,pssyevd_);
+  psyevd(double,pdsyevd_);
 
   pheev(CXXBLACS_SCALAPACK_Complex8 ,float ,pcheev_);
   pheev(CXXBLACS_SCALAPACK_Complex16,double,pzheev_);
+  pheevd(CXXBLACS_SCALAPACK_Complex8 ,float ,pcheevd_);
+  pheevd(CXXBLACS_SCALAPACK_Complex16,double,pzheevd_);
 
 
 

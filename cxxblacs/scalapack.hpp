@@ -188,12 +188,27 @@ namespace CXXBLACS {
     Field *W, Field *Z, const CB_INT IZ, const CB_INT JZ, const CB_INT *DESCZ,
     Field *WORK, const CB_INT LWORK);
 
+  template <typename Field>
+  inline CB_INT PSYEVD(const char JOBZ, const char UPLO, const CB_INT N,
+    Field *A, const CB_INT IA, const CB_INT JA, const CB_INT *DESCA,
+    Field *W, Field *Z, const CB_INT IZ, const CB_INT JZ, const CB_INT *DESCZ,
+    Field *WORK, const CB_INT LWORK, CB_INT *IWORK, const CB_INT LIWORK);
+
   template <typename Field, typename RealField>
   inline CB_INT PHEEV(const char JOBZ, const char UPLO, const CB_INT N,
     Field *A, const CB_INT IA, const CB_INT JA, const CB_INT *DESCA,
     RealField *W, Field *Z, const CB_INT IZ, const CB_INT JZ, 
     const CB_INT *DESCZ, Field *WORK, const CB_INT LWORK, RealField *RWORK,
     const CB_INT LRWORK);
+
+  template <typename Field, typename RealField>
+  inline CB_INT PHEEVD(const char JOBZ, const char UPLO, const CB_INT N,
+    Field *A, const CB_INT IA, const CB_INT JA, const CB_INT *DESCA,
+    RealField *W, Field *Z, const CB_INT IZ, const CB_INT JZ, 
+    const CB_INT *DESCZ, Field *WORK, const CB_INT LWORK, RealField *RWORK,
+    const CB_INT LRWORK, CB_INT* IWORK, const CB_INT LIWORK);
+
+
 
   #define PSYEV_IMPL(F,FUNC)\
   template <>\
@@ -208,6 +223,24 @@ namespace CXXBLACS {
     }\
     CB_INT INFO;\
     FUNC(&JOBZ,&UPLO,&N,A,&IA,&JA,DESCA,W,Z,&IZ,&JZ,DESCZ,WORK,&LWORK,&INFO);\
+    return INFO;\
+    \
+  }
+
+  #define PSYEVD_IMPL(F,FUNC)\
+  template <>\
+  inline CB_INT PSYEVD(const char JOBZ, const char UPLO, const CB_INT N,\
+    F *A, const CB_INT IA, const CB_INT JA, const CB_INT *DESCA,\
+    F *W, F *Z, const CB_INT IZ, const CB_INT JZ, const CB_INT *DESCZ,\
+    F *WORK, const CB_INT LWORK, CB_INT* IWORK, const CB_INT LIWORK) {\
+    \
+    if( DESCA[4] != DESCA[5] ) {\
+      std::runtime_error err("MB must be the same as NB in P?SYEV");\
+      throw err;\
+    }\
+    CB_INT INFO;\
+    FUNC(&JOBZ,&UPLO,&N,A,&IA,&JA,DESCA,W,Z,&IZ,&JZ,DESCZ,WORK,&LWORK,\
+      IWORK,&LIWORK,&INFO);\
     return INFO;\
     \
   }
@@ -230,11 +263,35 @@ namespace CXXBLACS {
     \
   }
 
+  #define PHEEVD_IMPL(F,RF,FUNC)\
+  template <>\
+  inline CB_INT PHEEVD(const char JOBZ, const char UPLO, const CB_INT N,\
+    F *A, const CB_INT IA, const CB_INT JA, const CB_INT *DESCA,\
+    RF *W, F *Z, const CB_INT IZ, const CB_INT JZ, const CB_INT *DESCZ,\
+    F *WORK, const CB_INT LWORK, RF* RWORK, const CB_INT LRWORK,\
+    CB_INT *IWORK, const CB_INT LIWORK) {\
+    \
+    if( DESCA[4] != DESCA[5] ) {\
+      std::runtime_error err("MB must be the same as NB in P?HEEV");\
+      throw err;\
+    }\
+    CB_INT INFO;\
+    FUNC(&JOBZ,&UPLO,&N,ToScalapackType(A),&IA,&JA,DESCA,W,ToScalapackType(Z),\
+      &IZ,&JZ,DESCZ,ToScalapackType(WORK),&LWORK,RWORK,&LRWORK,IWORK,&LIWORK,\
+      &INFO);\
+    return INFO;\
+    \
+  }
+
   PSYEV_IMPL(float ,pssyev_);
   PSYEV_IMPL(double,pdsyev_);
+  PSYEVD_IMPL(float ,pssyevd_);
+  PSYEVD_IMPL(double,pdsyevd_);
 
   PHEEV_IMPL(std::complex<float> ,float ,pcheev_);
   PHEEV_IMPL(std::complex<double>,double,pzheev_);
+  PHEEVD_IMPL(std::complex<float> ,float ,pcheevd_);
+  PHEEVD_IMPL(std::complex<double>,double,pzheevd_);
 
   template <typename Field>
   inline CB_INT PSYEV(const char JOBZ, const char UPLO, const CB_INT N,
@@ -243,6 +300,17 @@ namespace CXXBLACS {
     const ScaLAPACK_Desc_t DESCZ, Field *WORK, const CB_INT LWORK) {
 
     return PSYEV(JOBZ,UPLO,N,A,IA,JA,&DESCA[0],W,Z,IZ,JZ,&DESCZ[0],WORK,LWORK);
+
+  }
+
+  template <typename Field>
+  inline CB_INT PSYEVD(const char JOBZ, const char UPLO, const CB_INT N,
+    Field *A, const CB_INT IA, const CB_INT JA, const ScaLAPACK_Desc_t DESCA,
+    Field *W, Field *Z, const CB_INT IZ, const CB_INT JZ, 
+    const ScaLAPACK_Desc_t DESCZ, Field *WORK, const CB_INT LWORK,
+    CB_INT *IWORK, const CB_INT LIWORK ) {
+
+    return PSYEVD(JOBZ,UPLO,N,A,IA,JA,&DESCA[0],W,Z,IZ,JZ,&DESCZ[0],WORK,LWORK,IWORK,LIWORK);
 
   }
 
@@ -255,6 +323,18 @@ namespace CXXBLACS {
 
     return PHEEV(JOBZ,UPLO,N,A,IA,JA,&DESCA[0],W,Z,IZ,JZ,&DESCZ[0],WORK,LWORK,
         RWORK,LRWORK);
+
+  }
+
+  template <typename Field, typename RealField>
+  inline CB_INT PHEEVD(const char JOBZ, const char UPLO, const CB_INT N,
+    Field *A, const CB_INT IA, const CB_INT JA, const ScaLAPACK_Desc_t DESCA,
+    RealField *W, Field *Z, const CB_INT IZ, const CB_INT JZ, 
+    const ScaLAPACK_Desc_t DESCZ, Field *WORK, const CB_INT LWORK, 
+    RealField *RWORK, const CB_INT LRWORK, CB_INT *IWORK, const CB_INT LIWORK) {
+
+    return PHEEV(JOBZ,UPLO,N,A,IA,JA,&DESCA[0],W,Z,IZ,JZ,&DESCZ[0],WORK,LWORK,
+        RWORK,LRWORK,IWORK,LIWORK);
 
   }
 
