@@ -40,6 +40,8 @@ extern "C" {
   void blacs_gridexit_(const CB_INT*);
   void blacs_exit_(const CB_INT*);
   CB_INT  blacs_pnum_(CB_INT*,CB_INT*,CB_INT*);
+  CB_INT  Csys2blacs_handle( MPI_Comm );
+  void Cfree_blacs_system_handle( CB_INT );
 
 
   // BLACS Point-to-point communication

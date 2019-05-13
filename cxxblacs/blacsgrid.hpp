@@ -70,6 +70,7 @@ namespace CXXBLACS {
 
     // BLACS grid information
     CB_INT IContxt_ = 0;  ///< BLACS context
+    CB_INT bHandle_ = 0;
     CB_INT nProcRow_;     ///< Number of rows on BLACS grid
     CB_INT nProcCol_;     ///< Number of columns on BLACS grid
     CB_INT iProcRow_;     ///< Current row coordinate of BLACS grid
@@ -116,7 +117,8 @@ namespace CXXBLACS {
       MPI_Comm_size(comm_,&NPROC);
       iProc_ = IPROC;
       nProc_ = NPROC;
-      IContxt_ = comm_;
+      bHandle_ = Csys2blacs_handle( comm_ );
+      IContxt_ = bHandle_;
 
       // Make as close to a square grid as possible
       if( not ORDER.compare("linear") ) {
@@ -148,21 +150,24 @@ namespace CXXBLACS {
     };
 
 
-    ~BlacsGrid(){ BlacsGridExit(IContxt_); }
+    ~BlacsGrid() {  
+      BlacsGridExit(IContxt_); 
+      Cfree_blacs_system_handle( bHandle_ ); 
+    }
 
 
 
 
     // Getters 
-    inline CB_INT iProc()    const { return iProc_;    }; ///< #iProc_
-    inline CB_INT iProcRow() const { return iProcRow_; }; ///< #iProcRow_
-    inline CB_INT iProcCol() const { return iProcCol_; }; ///< #iProcCol_
-    inline CB_INT nProc()    const { return nProc_;    }; ///< #nProc_
-    inline CB_INT nProcRow() const { return nProcRow_; }; ///< #nProcRow_
-    inline CB_INT nProcCol() const { return nProcCol_; }; ///< #nProcCol_
-    inline CB_INT iContxt()  const { return IContxt_;  }; ///< #IContxt_
-    inline CB_INT NB()       const { return nb_;       }; ///< #nb_
-    inline CB_INT MB()       const { return mb_;       }; ///< #mb_
+    inline CB_INT iProc()    const noexcept { return iProc_;    }; ///< #iProc_
+    inline CB_INT iProcRow() const noexcept { return iProcRow_; }; ///< #iProcRow_
+    inline CB_INT iProcCol() const noexcept { return iProcCol_; }; ///< #iProcCol_
+    inline CB_INT nProc()    const noexcept { return nProc_;    }; ///< #nProc_
+    inline CB_INT nProcRow() const noexcept { return nProcRow_; }; ///< #nProcRow_
+    inline CB_INT nProcCol() const noexcept { return nProcCol_; }; ///< #nProcCol_
+    inline CB_INT iContxt()  const noexcept { return IContxt_;  }; ///< #IContxt_
+    inline CB_INT NB()       const noexcept { return nb_;       }; ///< #nb_
+    inline CB_INT MB()       const noexcept { return mb_;       }; ///< #mb_
 
 
     // Print functions
