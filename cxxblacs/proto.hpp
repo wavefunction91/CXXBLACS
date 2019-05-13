@@ -32,17 +32,17 @@
 extern "C" {
 
   // BLACS grid info
-  void blacs_pinfo_(CB_INT*,CB_INT*);
-  void blacs_get_(const CB_INT*,const CB_INT*,CB_INT*);
-  void blacs_gridinit_(CB_INT*,const char*,const CB_INT*,const CB_INT*);
-  void blacs_gridinfo_(const CB_INT*,CB_INT*,CB_INT*,CB_INT*,CB_INT*);
-  void blacs_barrier_(const CB_INT*,const char*);
-  void blacs_gridexit_(const CB_INT*);
-  void blacs_exit_(const CB_INT*);
-  CB_INT  blacs_pnum_(CB_INT*,CB_INT*,CB_INT*);
   CB_INT  Csys2blacs_handle( MPI_Comm );
   void Cfree_blacs_system_handle( CB_INT );
 
+  void Cblacs_pinfo(CB_INT*,CB_INT*);
+  void Cblacs_get(const CB_INT,const CB_INT,CB_INT*);
+  void Cblacs_gridinit(CB_INT*,const char*,const CB_INT,const CB_INT);
+  void Cblacs_gridinfo(const CB_INT,CB_INT*,CB_INT*,CB_INT*,CB_INT*);
+  void Cblacs_barrier(const CB_INT,const char*);
+  void Cblacs_gridexit(const CB_INT);
+  void Cblacs_exit(const CB_INT);
+  CB_INT  Cblacs_pnum(CB_INT,CB_INT,CB_INT);
 
   // BLACS Point-to-point communication
   #define gesd_rv2d(F,FUNC) \
