@@ -112,8 +112,16 @@ copy_meta_data( linalg linalg_LAPACK )
 fill_out_prefix( linalg_BLAS   )
 fill_out_prefix( linalg_LAPACK )
 
+
+# Thing like MKL can get handled by compile flag
+if( linalg_FLAGS )
+  set( LinAlg_FLAGS ${linalg_COMPILE_FLAGS} )
+endif()
+
+
 # Handle BLAS
 
+if( NOT linalg_IMPLICIT )
 if( NOT linalg_BLAS_LIBRARIES )
 
   message( STATUS "Will attempt to find BLAS using FindBLAS" )
@@ -133,6 +141,7 @@ else()
   set( LinAlg_BLAS_LIBRARIES ${linalg_BLAS_LIBRARIES} )
 
 endif()
+endif()
 
 
 # Check function existance and linkage / name mangling
@@ -142,7 +151,13 @@ cmake_push_check_state( RESET )
 if( LinAlg_BLAS_LIBRARIES )
   set( CMAKE_REQUIRED_LIBRARIES ${LinAlg_BLAS_LIBRARIES} )
 endif()
+if( LinAlg_FLAGS )
+  set( CMAKE_REQUIRED_FLAGS ${LinAlg_FLAGS} )
+endif()
+
 set( CMAKE_REQUIRED_QUIET ON )
+
+
 
 check_library_exists( "" dgemm  "" LinAlg_BLAS_NO_UNDERSCORE   ) 
 check_library_exists( "" dgemm_ "" LinAlg_BLAS_USES_UNDERSCORE ) 
@@ -192,6 +207,13 @@ if( LinAlg_BLAS_FOUND AND NOT TARGET LinAlg::BLAS )
   set_target_properties( LinAlg::BLAS PROPERTIES
     INTERFACE_LINK_LIBRARIES "${LinAlg_BLAS_LIBRARIES}"
   )
+  if( LinAlg_FLAGS )
+    # TODO INTERFACE_LINK_LIBRARIES -> INTERFACE_LINK_OPTIONS for 3.13+
+    set_target_properties( LinAlg::BLAS PROPERTIES
+      INTERFACE_COMPILE_OPTIONS "${LinAlg_FLAGS}"
+      INTERFACE_LINK_LIBRARIES  "${LinAlg_FLAGS}"
+    )
+  endif()
 
   # TODO: Add property to use a definition for "_" mangling
   # TODO: Add headers if found
@@ -206,6 +228,7 @@ endif()
 
 # Handle LAPACK
 
+if( NOT linalg_IMPLICIT )
 if( NOT linalg_LAPACK_LIBRARIES )
 
   message( STATUS "Will attempt to find LAPACK using FindLAPACK" )
@@ -225,81 +248,82 @@ else()
   set( LinAlg_LAPACK_LIBRARIES ${linalg_LAPACK_LIBRARIES} )
 
 endif()
+endif()
 
 # Remove BLAS libs from LAPACK libs
-if( LinAlg_LAPACK_LIBRARIES )
-
-  foreach( blas_lib ${LinAlg_LAPACK_LIBRARIES} )
-
-    # determine if shared or static based on .a or .so
-    string( REGEX MATCH ".*\\.so.*" LIB_IS_SHARED ${blas_lib} )
-
-    if( LIB_IS_SHARED )
-      exec_program( 
-        "objdump -TC ${blas_lib}" 
-        OUTPUT_VARIABLE   LIB_OBJ_OUTPUT
-      )
-    else()
-      exec_program( 
-        "nm -nC ${blas_lib}" 
-        OUTPUT_VARIABLE   LIB_OBJ_OUTPUT
-      )
-    endif()
-
-    string( REGEX REPLACE "\n" "${Esc};" LIB_OBJ_OUTPUT_LIST 
-            "${LIB_OBJ_OUTPUT}" )
-
-    message( STATUS "Looking for BLAS in ${blas_lib}" )
-    foreach( line ${LIB_OBJ_OUTPUT_LIST} )
-
-      if( NOT LIB_HAS_DGEMM )
-        if( LIB_IS_SHARED )
-          string( REGEX MATCH ".*text.*dgemm.*" LIB_HAS_DGEMM 
-                  ${line} )
-        else()
-          string( REGEX MATCH ".*T dgemm.*" LIB_HAS_DGEMM 
-                  ${line} )
-        endif()
-      endif()
-
-    endforeach()
-
-    if( LIB_HAS_DGEMM )
-      message( STATUS "Looking for BLAS in ${blas_lib} - found" )
-      list(APPEND LAPACK_BLAS_LIBS ${blas_lib} )
-    else()
-      message( STATUS "Looking for BLAS in ${blas_lib} - not found" )
-    endif()
-
-    unset( LIB_OBJ_OUTPUT )
-    unset( LIB_HAS_DGEMM )
-
-  endforeach()
-
-
-
-  # Strip BLAS libraies
-
-  message( STATUS "Stripping BLAS from LAPACK linkage" )
-
-  # First check if any of the libs specifed in BLAS are in the 
-  # LAPACK linkage, they'll be linked in target
-  if( LinAlg_BLAS_LIBRARIES )  
-    foreach( lib ${LinAlg_BLAS_LIBRARIES} )
-      list( REMOVE_ITEM LinAlg_LAPACK_LIBRARIES ${lib} )
-    endforeach()
-  endif()
-
-  # Next strip the found libraries
-  if( LAPACK_BLAS_LIBS )
-    foreach( lib ${LAPACK_BLAS_LIBS} )
-      list( REMOVE_ITEM LinAlg_LAPACK_LIBRARIES ${lib} )
-    endforeach()
-  endif() 
-
-  unset( LAPACK_BLAS_LIBS )
-
-endif()
+#if( LinAlg_LAPACK_LIBRARIES )
+#
+#  foreach( blas_lib ${LinAlg_LAPACK_LIBRARIES} )
+#
+#    # determine if shared or static based on .a or .so
+#    string( REGEX MATCH ".*\\.so.*" LIB_IS_SHARED ${blas_lib} )
+#
+#    if( LIB_IS_SHARED )
+#      exec_program( 
+#        "objdump -TC ${blas_lib}" 
+#        OUTPUT_VARIABLE   LIB_OBJ_OUTPUT
+#      )
+#    else()
+#      exec_program( 
+#        "nm -nC ${blas_lib}" 
+#        OUTPUT_VARIABLE   LIB_OBJ_OUTPUT
+#      )
+#    endif()
+#
+#    string( REGEX REPLACE "\n" "${Esc};" LIB_OBJ_OUTPUT_LIST 
+#            "${LIB_OBJ_OUTPUT}" )
+#
+#    message( STATUS "Looking for BLAS in ${blas_lib}" )
+#    foreach( line ${LIB_OBJ_OUTPUT_LIST} )
+#
+#      if( NOT LIB_HAS_DGEMM )
+#        if( LIB_IS_SHARED )
+#          string( REGEX MATCH ".*text.*dgemm.*" LIB_HAS_DGEMM 
+#                  ${line} )
+#        else()
+#          string( REGEX MATCH ".*T dgemm.*" LIB_HAS_DGEMM 
+#                  ${line} )
+#        endif()
+#      endif()
+#
+#    endforeach()
+#
+#    if( LIB_HAS_DGEMM )
+#      message( STATUS "Looking for BLAS in ${blas_lib} - found" )
+#      list(APPEND LAPACK_BLAS_LIBS ${blas_lib} )
+#    else()
+#      message( STATUS "Looking for BLAS in ${blas_lib} - not found" )
+#    endif()
+#
+#    unset( LIB_OBJ_OUTPUT )
+#    unset( LIB_HAS_DGEMM )
+#
+#  endforeach()
+#
+#
+#
+#  # Strip BLAS libraies
+#
+#  message( STATUS "Stripping BLAS from LAPACK linkage" )
+#
+#  # First check if any of the libs specifed in BLAS are in the 
+#  # LAPACK linkage, they'll be linked in target
+#  if( LinAlg_BLAS_LIBRARIES )  
+#    foreach( lib ${LinAlg_BLAS_LIBRARIES} )
+#      list( REMOVE_ITEM LinAlg_LAPACK_LIBRARIES ${lib} )
+#    endforeach()
+#  endif()
+#
+#  # Next strip the found libraries
+#  if( LAPACK_BLAS_LIBS )
+#    foreach( lib ${LAPACK_BLAS_LIBS} )
+#      list( REMOVE_ITEM LinAlg_LAPACK_LIBRARIES ${lib} )
+#    endforeach()
+#  endif() 
+#
+#  unset( LAPACK_BLAS_LIBS )
+#
+#endif()
 
 # Check function existance and linkage / name mangling
 cmake_push_check_state( RESET )
@@ -310,6 +334,10 @@ endif()
 
 if( LinAlg_BLAS_LIBRARIES )
   list( APPEND CMAKE_REQUIRED_LIBRARIES ${LinAlg_BLAS_LIBRARIES} )
+endif()
+
+if( LinAlg_FLAGS )
+  set( CMAKE_REQUIRED_FLAGS ${LinAlg_FLAGS} )
 endif()
 
 

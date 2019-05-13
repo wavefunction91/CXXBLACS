@@ -21,6 +21,7 @@
 
 #include <cxxblacs/config.hpp>
 #include <cxxblacs/proto.hpp>
+#include <vector>
 
 namespace CXXBLACS {
 
