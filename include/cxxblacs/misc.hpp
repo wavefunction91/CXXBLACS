@@ -124,11 +124,12 @@ namespace CXXBLACS {
     const CB_INT N, const CB_INT MB, const CB_INT NB, const CB_INT ISRC,
     const CB_INT JSRC, const CB_INT ICTXT, const CB_INT LDD) {
 
+    CB_INT LDD_u = std::max(1, LDD);
 
     ScaLAPACK_Desc_t desc;
 
     CB_INT INFO;
-    descinit_(&desc[0],&M,&N,&MB,&NB,&ISRC,&JSRC,&ICTXT,&LDD,&INFO);
+    descinit_(&desc[0],&M,&N,&MB,&NB,&ISRC,&JSRC,&ICTXT,&LDD_u,&INFO);
 
     // Note that this is not always fatal, and useful information can
     // be obtained, such as smallest LDD

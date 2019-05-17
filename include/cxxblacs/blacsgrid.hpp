@@ -98,7 +98,8 @@ namespace CXXBLACS {
      *   @param[in] ORDER  Process Grid ordering (row / column major)
      *
      */
-    BlacsGrid(MPI_Comm c, CB_INT mb = 2, CB_INT nb = 2,
+    BlacsGrid(MPI_Comm c, CB_INT mb, CB_INT nb,
+      CB_INT npr = 0, CB_INT npc = 0, 
       std::string ORDER = "row-major", CB_INT iSrc = 0,
       CB_INT jSrc = 0) : 
       comm_(c), mb_(mb), nb_(nb), iSrc_(iSrc), jSrc_(jSrc) {
@@ -111,6 +112,8 @@ namespace CXXBLACS {
         throw err;
       }
 
+      if( comm_ == MPI_COMM_NULL ) return;
+
       // Get the MPI info and system context
       int IPROC, NPROC; // for 64-bit ints
       MPI_Comm_rank(comm_,&IPROC);
@@ -121,7 +124,17 @@ namespace CXXBLACS {
       IContxt_ = bHandle_;
 
       // Make as close to a square grid as possible
-      if( not ORDER.compare("linear") ) {
+      if( npr && npc ) {        
+
+        if( npr * npc != nProc_ ) {
+          std::runtime_error err("NPROCROW * NPROCCOL != NPROC");
+          throw err;
+        }
+
+        nProcRow_ = npr;
+        nProcCol_ = npc;
+
+      } else if( not ORDER.compare("linear") ) {
 
         nProcRow_ = 1;
         nProcCol_ = nProc_;
@@ -169,6 +182,7 @@ namespace CXXBLACS {
     inline CB_INT NB()       const noexcept { return nb_;       }; ///< #nb_
     inline CB_INT MB()       const noexcept { return mb_;       }; ///< #mb_
 
+    inline bool i_participate() const noexcept { return comm_ != MPI_COMM_NULL; };
 
     // Print functions
           
@@ -311,7 +325,7 @@ namespace CXXBLACS {
 
       // Create a new BLACS grid which conains matrix
       // on source process
-      BlacsGrid new_grid( comm_, M, N, "row-major", 
+      BlacsGrid new_grid( comm_, M, N, 0,0, "row-major", 
                           iSource, jSource );
 
       
@@ -349,7 +363,7 @@ namespace CXXBLACS {
 
       // Create a new BLACS grid which conains matrix
       // on dest process
-      BlacsGrid new_grid( comm_, M, N, "row-major", 
+      BlacsGrid new_grid( comm_, M, N, 0,0, "row-major", 
                           iDest, jDest );
 
 
