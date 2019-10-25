@@ -40,7 +40,7 @@ void pgesv_test(const CB_INT N, const CB_INT NRHS,
   // Synchronize processes
   MPI_Barrier(MPI_COMM_WORLD);
 
-  BlacsGrid grid(MPI_COMM_WORLD,MB);
+  BlacsGrid grid(MPI_COMM_WORLD,MB,MB);
 
   std::vector<Field> A, ALoc, ZLoc, B, BLoc;
   std::vector<RealType> W;

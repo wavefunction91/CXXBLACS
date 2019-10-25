@@ -100,9 +100,6 @@ void ptrmm_test(char SIDE, char UPLO, char TRANSA, char DIAG,  Field ALPHA,
 
     RealType maxDiff = *std::max_element(DIFF.begin(),DIFF.end());
 
-    std::cout << "MAX DIFF " << maxDiff << std::endl;
-
-
     EXPECT_NEAR( maxDiff, 0., 1e-10 ) << 
       "MAX DIFF " << maxDiff
       << " " << std::numeric_limits<RealType>::epsilon() 

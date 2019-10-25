@@ -385,13 +385,15 @@ namespace CXXBLACS {
     RealField *W, Field *Z, const CB_INT IZ, const CB_INT JZ, 
     const CB_INT *DESCZ) {
 
-    CB_INT LRWORK = 4*N - 2;
-    std::vector< RealField > RWORK(LRWORK);
+    //CB_INT LRWORK = 4*N - 2;
+    //std::vector< RealField > RWORK(LRWORK);
 
     CB_INT LWORK  = -1;
     CB_INT LIWORK = -1;
+    CB_INT LRWORK = -1;
     std::vector< Field >  WORK(5);
     std::vector< CB_INT > IWORK(5);
+    std::vector< RealField> RWORK(5);
 
     auto INFO = PHEEVD( JOBZ, UPLO, N, A, IA, JA, DESCA, W, Z, IZ, JZ, DESCZ,
                   WORK.data(), LWORK, RWORK.data(), LRWORK, IWORK.data(), 
@@ -401,8 +403,10 @@ namespace CXXBLACS {
 
       LWORK  = CB_INT( std::real(WORK[0]) );
       LIWORK = IWORK[0];
+      LRWORK = RWORK[0];
       WORK.resize(LWORK);
       IWORK.resize(LIWORK);
+      RWORK.resize(LRWORK);
 
       INFO = PHEEVD( JOBZ, UPLO, N, A, IA, JA, DESCA, W, Z, IZ, JZ, DESCZ,
                WORK.data(), LWORK, RWORK.data(), LRWORK, IWORK.data(), 

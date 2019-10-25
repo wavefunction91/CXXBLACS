@@ -66,7 +66,7 @@ void ppotrf_test( CB_INT N ) {
 
   // Get LWORK
   CXXBLACS::PPOTRF('L',N,ALoc.data(),1,1,DescA);
-  grid.printLocalBuffer(std::cout,N,N,ALoc.data(),MLoc);
+  //grid.printLocalBuffer(std::cout,N,N,ALoc.data(),MLoc);
 
   // Gather the eigenvectors to root process
   grid.Gather(N,N,L.data(),N,ALoc.data(),MLoc,0,0);

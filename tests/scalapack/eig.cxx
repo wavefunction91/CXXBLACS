@@ -205,7 +205,7 @@ void pheev_test( CB_INT N ) {
   // Synchronize processes
   MPI_Barrier(MPI_COMM_WORLD);
 
-  BlacsGrid grid(MPI_COMM_WORLD,MB);
+  BlacsGrid grid(MPI_COMM_WORLD,MB,MB);
 
   std::vector<Field> A, ALoc, Z, ZLoc;
   std::vector<RealType> W;
@@ -287,7 +287,7 @@ void pheevd_test( CB_INT N ) {
   // Synchronize processes
   MPI_Barrier(MPI_COMM_WORLD);
 
-  BlacsGrid grid(MPI_COMM_WORLD,MB);
+  BlacsGrid grid(MPI_COMM_WORLD,MB,MB);
 
   std::vector<Field> A, ALoc, Z, ZLoc;
   std::vector<RealType> W;
