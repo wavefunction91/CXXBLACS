@@ -28,14 +28,23 @@ namespace CXXBLACS {
   inline void LACOPY(const char UPLO, const CB_INT M, const CB_INT N,
     Field *A, const CB_INT LDA, Field *B, const CB_INT LDB);
 
+#ifdef LAPACK_FORTRAN_STRLEN_END
   #define LACOPY_IMPL(F,FUNC)\
+  template <>\
+  inline void LACOPY(const char UPLO, const CB_INT M, const CB_INT N,\
+    F *A, const CB_INT LDA, F *B, const CB_INT LDB) {\
+    FUNC(cc(&UPLO),cc(&M),cc(&N),ToLapackType(cc(A)),cc(&LDA),\
+      ToLapackType(cc(B)),cc(&LDB),1);\
+  }
+#else
+#define LACOPY_IMPL(F,FUNC)\
   template <>\
   inline void LACOPY(const char UPLO, const CB_INT M, const CB_INT N,\
     F *A, const CB_INT LDA, F *B, const CB_INT LDB) {\
     FUNC(cc(&UPLO),cc(&M),cc(&N),ToLapackType(cc(A)),cc(&LDA),\
       ToLapackType(cc(B)),cc(&LDB));\
   }
-
+#endif
   LACOPY_IMPL(float                    ,slacpy_);
   LACOPY_IMPL(double                   ,dlacpy_);
   LACOPY_IMPL(std::complex<float> ,clacpy_);
